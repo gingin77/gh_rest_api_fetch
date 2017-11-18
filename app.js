@@ -1,10 +1,10 @@
 let language = []
 let languageUrls = []
-let langBytes = {}
+let langBytes = []
 
 /*  It might be nice to keep track of the name of the repo that each set of language stats comes from... Then I could ask, rank repos by language usage stats
 
-  langBytes = {
+  langBytes = []
     name: "repo_name",
     languages: {HTML: 4327, JavaScript: 1831}
   }
@@ -13,14 +13,14 @@ let langBytes = {}
 
 fetchGET('https://api.github.com/users/gingin77/repos?per_page=100&page=1')
 
-function fetchGET (url) {
+function fetchGET(url) {
   fetch(url)
-    .then(function (response) {
+    .then(function(response) {
       if (response.status !== 200) {
         console.log(response.status)
         return
       }
-      response.json().then(function (data) {
+      response.json().then(function(data) {
         console.log(data)
         console.log(data.length)
 
@@ -36,28 +36,57 @@ function fetchGET (url) {
         }
       })
     })
-    .catch(function (err) {
+    .catch(function(err) {
       console.log('Fetch Error :-S', err)
     })
 }
 
-function getLanguageBytes (url) {
+function getLanguageBytes(url) {
   fetch(url)
-    .then(function (response) {
+    .then(function(response) {
       if (response.status !== 200) {
         console.log(response.status)
         return
       }
-      response.json().then(function (data) {
+      response.json().then(function(data) {
         console.log(data)
-        langBytes.repo_url = url
-        langBytes.langStats = data
-        console.log(langBytes)
+        let repoInfo = {}
+        repoInfo.repo_url = url
+        repoInfo.langStats = data
+        console.log(repoInfo)
+
+        langBytes.push(repoInfo)
       })
     })
-    .catch(function (err) {
+    .catch(function(err) {
       console.log('Fetch Error :-S', err)
     })
 }
 
-console.log(langBytes)
+let langsTotal = []
+
+function tallyLangByteCounts (langBytes) {
+  for (let i = 0; i < langBytes.length; i++) {
+    let langArray = Object.getOwnPropertyNames(langBytes[i].langStats)
+    let statsArray = Object.values(langBytes[i].langStats)
+    let listedInLangsTotal = langsTotal.map(function (obj) {
+      return obj.language
+    })
+    for (let q = 0; q < langArray.length; q++) {
+      let langObj = {}
+      langObj.language = langArray[q]
+      langObj.count = statsArray[q]
+
+      if (langsTotal.length === 0) {
+        langsTotal.push(langObj)
+      } else {
+        if (listedInLangsTotal.includes(langArray[q]) === true) {
+          let indexPos = listedInLangsTotal.indexOf(langArray[q])
+          langsTotal[indexPos].count = langsTotal[indexPos].count + statsArray[q]
+        } else {
+          langsTotal.push(langObj)
+        }
+      }
+    }
+  }
+}
