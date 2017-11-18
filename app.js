@@ -1,5 +1,15 @@
 let language = []
 let languageUrls = []
+let langBytes = []
+
+/*  It might be nice to keep track of the name of the repo that each set of language stats comes from... Then I could ask, rank repos by language usage stats
+
+  langBytes = {
+    name: "repo_name",
+    languages: {HTML: 4327, JavaScript: 1831}
+  }
+
+*/
 
 fetchGET('https://api.github.com/users/gingin77/repos?per_page=100&page=1')
 
@@ -20,35 +30,16 @@ function fetchGET (url) {
           language.push(dataObj[i].language)
           languageUrls.push(dataObj[i].languages_url)
         }
-        // console.log(languageUrls[0])
-        // getLanguageBytes(languageUrls[0])
 
-        for (let q = 0; q < languageUrls.length; q++) {
+        for (let q = 0; q < 3; q++) {
           getLanguageBytes(languageUrls[q])
         }
-
+      })
     })
     .catch(function (err) {
       console.log('Fetch Error :-S', err)
     })
-  })
 }
-
-// getURLS(languageUrls)
-//
-// // let urlArray = []
-// let byteUrl = ''
-
-// function getURLS () {
-//   console.log("getURLS was called")
-//   let urlArray = Object.values(languageUrls)
-//   console.log(urlArray)
-//   for (let q = 0; q < languageUrls.length; q++) {
-//     getLanguageBytes(languageUrls[q])
-//   }
-// }
-
-// getLanguageBytes('https://api.github.com/repos/gingin77/Authentication_proj/languages')
 
 function getLanguageBytes (url) {
   fetch(url)
@@ -59,13 +50,13 @@ function getLanguageBytes (url) {
       }
       response.json().then(function (data) {
         console.log(data)
-
-        let langObj = data
-
-        // for (let i = 0; i < langObj.length; i++) {
-        //   language.push(dataObj[i].language)
-        //   languageUrls.push(dataObj[i].languages_url)
-        // }
+        langBytes.push(data)
+        console.log(langBytes)
       })
     })
+    .catch(function (err) {
+      console.log('Fetch Error :-S', err)
+    })
 }
+
+console.log(langBytes)
