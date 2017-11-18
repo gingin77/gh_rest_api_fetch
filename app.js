@@ -1,6 +1,6 @@
 let language = []
 let languageUrls = []
-let langBytes = []
+let langBytes = {}
 
 /*  It might be nice to keep track of the name of the repo that each set of language stats comes from... Then I could ask, rank repos by language usage stats
 
@@ -31,7 +31,7 @@ function fetchGET (url) {
           languageUrls.push(dataObj[i].languages_url)
         }
 
-        for (let q = 0; q < 3; q++) {
+        for (let q = 0; q < 2; q++) {
           getLanguageBytes(languageUrls[q])
         }
       })
@@ -50,7 +50,8 @@ function getLanguageBytes (url) {
       }
       response.json().then(function (data) {
         console.log(data)
-        langBytes.push(data)
+        langBytes.repo_url = url
+        langBytes.langStats = data
         console.log(langBytes)
       })
     })
