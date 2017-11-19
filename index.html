@@ -12,6 +12,7 @@
  		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
  		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
  		<link rel="stylesheet" type="text/css" href=" ">
+    <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-collection.v1.min.js"></script>
     <script src="https://d3js.org/d3-dispatch.v1.min.js"></script>
     <script src="https://d3js.org/d3-dsv.v1.min.js"></script>
@@ -19,40 +20,39 @@
  	</head>
  	<body>
  		<h1>Hello, World!</h1>
-    <div id="results_container">
-    </div>
     <script>
-      let resultsContainer = document.getElementById('results_container')
+      let language = []
+      let languageUrls = []
+      let arrayOfLangObjs = []
+      let langBytes = []
 
-      d3.json('https://itunes.apple.com/search?term=beyonce', function(data) {
+      d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function(data) {
         console.log(data)
-        let markup = ''
-        let abrv = data.results
+        let dataObj = data
 
-        for (let i = 0; i < data.results.length; i++) {
-          let coverArt = abrv[i].artworkUrl100
-          let artist = abrv[i].artistName
-          let audio = abrv[i].previewUrl
-          let songTitle = abrv[i].trackName
+        for (let i = 0; i < data.length; i++) {
+          let langObj = {}
+          langObj.repo_name = dataObj[i].name
+          langObj.primary_language = dataObj[i].language
+          langObj.url_lang_bytes = dataObj[i].languages_url
+          langObj.created_at = dataObj[i].created_at
+          langObj.pushed_at = dataObj[i].pushed_at
 
-          let songResultHits = `
-          <div class="item" url="${audio}" value='${artist}, "${songTitle}"'>
-            <img src="${coverArt}" url="${audio}" value='${artist}, "${songTitle}"'/>
-            <div class="song_info_holder">
-              <h4 url="${audio}" value='${artist}, "${songTitle}"'>${songTitle}</h4>
-              <br>
-              <h3 url="${audio}" value='${artist}, "${songTitle}"'>${artist}</h3>
-            </div>
-          </div>`
+          arrayOfLangObjs.push(langObj)
 
-          markup += songResultHits
+          language.push(dataObj[i].language)
+          languageUrls.push(dataObj[i].languages_url)
         }
-        resultsContainer.innerHTML = markup
 
-        let itemDivs = document.getElementsByClassName('item')
-        for (let j = 0; j < itemDivs.length; j++) {
-          itemDivs[j].addEventListener('click', moveChosenSongToPlayer, true)
-        }
+        console.log(arrayOfLangObjs)
+
+        let p = d3.select("body")
+                    .selectAll("p")
+                    .data(language)
+                    .enter().append("p")
+                    .text(function (d, i) {
+                        return d;
+                    })
       });
     </script>
  	</body>
