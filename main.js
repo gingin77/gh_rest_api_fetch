@@ -1,42 +1,38 @@
+let arrayOfLangObjs = []
 let repoPrimryLang = []
 let allLangUrls = []
-let arrayOfLangObjs = []
 let neededlangByteUrls = []
-let langBytes = []
+// let langBytes = []
 
-// d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function(data) {
-//   console.log(data)
-//   let dataObj = data
-//
-  // for (let i = 0; i < data.length; i++) {
-  //   let langObj = {}
-  //   langObj.repo_name = dataObj[i].name
-  //   langObj.primary_repoPrimryLang = dataObj[i].repoPrimryLang
-  //   langObj.url_lang_bytes = dataObj[i].repoPrimryLangs_url
-  //   langObj.created_at = dataObj[i].created_at
-  //   langObj.pushed_at = dataObj[i].pushed_at
-  //
-  //   arrayOfLangObjs.push(langObj)
-  //
-  //   repoPrimryLang.push(dataObj[i].repoPrimryLang)
-  //   allLangUrls.push(dataObj[i].repoPrimryLangs_url)
-  // }
-//
-//   console.log(arrayOfLangObjs)
+d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (ghdata) {
+  console.log(ghdata)
+  let dataObj = ghdata
+  console.log(dataObj)
+
+  for (let i = 0; i < dataObj.length; i++) {
+    let langObj = {}
+    langObj.repo_name = dataObj[i].name
+    langObj.primary_repo_lang = dataObj[i].language
+    langObj.url_lang_bytes = dataObj[i].languages_url
+    langObj.created_at = dataObj[i].created_at
+    langObj.pushed_at = dataObj[i].pushed_at
+
+    arrayOfLangObjs.push(langObj)
+
+    repoPrimryLang.push(dataObj[i].language)
+    allLangUrls.push(dataObj[i].languages_url)
+  }
+
+  console.log(arrayOfLangObjs)
+  filterUrls(arrayOfLangObjs)
 // })
+//
+//
+// d3.json('static_data/arrayOfLangObjs.json.txt', function(data) {
 
+// d3.json('static_data/language.txt', function(langsdata) {
+  // repoPrimryLang = langsdata
 
-d3.json('static_data/arrayOfLangObjs.json.txt', function(data) {
-  let langObj = data
-  let thirtyMoRcntPshdRepos = langObj.slice().sort((a, b) =>
-    new Date(b.pushed_at) - new Date(a.pushed_at)
-  ).slice(0, 30)
-  neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) =>
-    obj.url_lang_bytes)
-})
-
-d3.json('static_data/language.txt', function(langsdata) {
-  repoPrimryLang = langsdata
   let repoPrimLangCountObj = repoPrimryLang.reduce(function (allLangs, lang) {
     allLangs[lang] = allLangs[lang] ? allLangs[lang] + 1 : 1
     return allLangs
@@ -51,24 +47,6 @@ d3.json('static_data/language.txt', function(langsdata) {
   )
 
   var data = sortedArrayForD3
-
-  // [{
-  // 		"language": "Ruby",
-  // 		"count": 8
-  // 	},
-  // 	{
-  // 		"language": "JavaScript",
-  // 		"count": 12
-  // 		},
-  // 	{
-  // 		"language": "CSS",
-  // 		"count": 5
-  // 		},
-  // 	{
-  // 	"language": "HTML",
-  // 	"count": 3
-  // }]
-
   console.log(data)
 
   var barWidth = 50
@@ -143,3 +121,63 @@ d3.json('static_data/language.txt', function(langsdata) {
     .attr('transform', 'translate(0, 18)')
     .attr('class', 'yAxis')
 })
+
+function filterUrls (arrayOfLangObjs) {
+  let allLangUrls2 = arrayOfLangObjs.map((obj) => obj.url_lang_bytes)
+  console.log(allLangUrls2)
+  let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
+    new Date(b.pushed_at) - new Date(a.pushed_at)
+  ).slice(0, 30)
+  neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_lang_bytes)
+  console.log(neededlangByteUrls)
+}
+
+// function getLanguageBytes(url) {
+//   fetch(url)
+//     .then(function(response) {
+//       if (response.status !== 200) {
+//         console.log(response.status)
+//         return
+//       }
+//       response.json().then(function(data) {
+//         console.log(data)
+//         let repoInfo = {}
+//         repoInfo.repo_url = url
+//         repoInfo.langStats = data
+//         console.log(repoInfo)
+//
+//         langBytes.push(repoInfo)
+//       })
+//     })
+//     .catch(function(err) {
+//       console.log('Fetch Error :-S', err)
+//     })
+// }
+//
+// // let langsTotal = []
+//
+// function tallyLangByteCounts (langBytes) {
+//   for (let i = 0; i < langBytes.length; i++) {
+//     let langArray = Object.getOwnPropertyNames(langBytes[i].langStats)
+//     let statsArray = Object.values(langBytes[i].langStats)
+//     let listedInLangsTotal = langsTotal.map(function (obj) {
+//       return obj.language
+//     })
+//     for (let q = 0; q < langArray.length; q++) {
+//       let langObj = {}
+//       langObj.language = langArray[q]
+//       langObj.count = statsArray[q]
+//
+//       if (langsTotal.length === 0) {
+//         langsTotal.push(langObj)
+//       } else {
+//         if (listedInLangsTotal.includes(langArray[q]) === true) {
+//           let indexPos = listedInLangsTotal.indexOf(langArray[q])
+//           langsTotal[indexPos].count = langsTotal[indexPos].count + statsArray[q]
+//         } else {
+//           langsTotal.push(langObj)
+//         }
+//       }
+//     }
+//   }
+// }
