@@ -5,17 +5,8 @@ let neededlangByteUrls = []
 let langBytesAryofObjs = []
 let langsTotal = []
 
-// let fourTestUrls = [
-//   'https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages',
-//   'https://api.github.com/repos/gingin77/gingin77.github.io/languages'
-//   // 'https://api.github.com/repos/gingin77/gh_language_graph/languages',
-//   // 'https://api.github.com/repos/gingin77/memory-game/languages'
-// ]
-
 d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (ghdata) {
-  // console.log(ghdata)
   let dataObj = ghdata
-
   for (let i = 0; i < dataObj.length; i++) {
     let langObj = {}
     langObj.repo_name = dataObj[i].name
@@ -29,16 +20,7 @@ d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', funct
     repoPrimryLang.push(dataObj[i].language)
     allLangUrls.push(dataObj[i].languages_url)
   }
-  console.log(arrayOfLangObjs)
-  // getAllLanguageBytes(fourTestUrls)
-
   enrichUrls(arrayOfLangObjs)
-// })
-
-// d3.json('static_data/arrayOfLangObjs.json.txt', function(data) {
-//
-// d3.json('static_data/language.txt', function(langsdata) {
-//   repoPrimryLang = langsdata
 
 // Transform data for d3 to use
   let repoPrimLangCountObj = repoPrimryLang.reduce(function (allLangs, lang) {
@@ -130,7 +112,7 @@ function enrichUrls (arrayOfLangObjs) {
   console.log('enrichUrls was called')
   let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
     new Date(b.pushed_at) - new Date(a.pushed_at)
-  ).slice(0, 4)
+  ).slice(0, 30)
   neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
   getAllLanguageBytes(neededlangByteUrls)
 }
@@ -151,11 +133,11 @@ function getLanguageBytes (url) {
         return
       }
       response.json().then(function (data) {
-        console.log(langBytesAryofObjs.length)
         let repoInfo = {}
         repoInfo.url_for_all_repo_langs = url
         repoInfo.all_lang_bytes_for_repo = data
         langBytesAryofObjs.push(repoInfo)
+
         evalLangBytArrStatus(langBytesAryofObjs)
       })
     })
@@ -165,10 +147,6 @@ function getLanguageBytes (url) {
 }
 
 function evalLangBytArrStatus () {
-  console.log(neededlangByteUrls.length)
-  console.log('^^ neededlangByteUrls.length')
-  console.log(langBytesAryofObjs.length)
-  console.log('^^ langBytesAryofObjs.length')
   if (langBytesAryofObjs.length === neededlangByteUrls.length) {
     tallyLangByteCounts(langBytesAryofObjs)
     buildComprehensiveObj(arrayOfLangObjs, langBytesAryofObjs)
