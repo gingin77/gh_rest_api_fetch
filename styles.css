@@ -1,0 +1,48 @@
+body{
+  max-width: 800px;
+}
+section{
+  margin: 20px;
+  padding: 20px;
+  font-family: 'Josefin Sans', sans-serif;
+  color: #060026;
+}
+#wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}
+#graphicOne, #graphicTwo{
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+  text-align: center;
+}
+#graphicTwo{
+  margin-left: 80px;
+}
+#byte_freq{
+  padding: 0 19px 0 0;
+  margin-left: -12px;
+}
+svg {
+  padding: 20px;
+}
+rect {
+  fill: #060026;
+}
+text {
+  fill: white;
+  font-family: 'Josefin Sans', sans-serif;
+}
+text.yAxis {
+  font-size: 14px;
+  font-family: 'Josefin Sans', sans-serif;
+  fill: #060026;
+  z-index: 10;
+}
+
+.cell {
+  position: absolute;
+}
