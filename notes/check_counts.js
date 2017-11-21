@@ -11,32 +11,106 @@ d3.json('static_data/compObj_46_repos.json', function (ghdata) {
 })
 
 function rebuildAllLangObj (comprehensiveObj) {
+  // First, build an array of objects that only contain the language stats. Throw out the repo identifying info
   let langsTotal2 = comprehensiveObj.map((objs) => objs.all_lang_bytes_for_repo)
-  let bigArrOfArrays = []
+  // Sample output, first 3 items in langsTotal2 array
+    // 0: Object { JavaScript: 6886, HTML: 810 }
+    // 1: Object { CSS: 13746, HTML: 11864 }
+    // 2: Object { Ruby: 17820 }
+
+  // Create an empty array that will hold all lang counts
+  let bigAryOfObjs = []
+
+  // Loop through the array of Objects created in first line of function.
   for (let i = 0; i < langsTotal2.length; i++) {
-    let kvPairs = Object.entries(langsTotal2[i])
-    bigArrOfArrays.push(kvPairs)
+    // Convert each object  key-value pair
+    let kv_pairs = Object.entries(langsTotal2[i])
+    // Sample output from first 2 items from original array of objects. Note that shown below is each kv_pair array of arrays:
+      // […]
+        // 0: Array [ "JavaScript", 6886 ]
+        // 1: Array [ "HTML", 810 ]
+        // length: 2
+        // __proto__: Array []
+
+        // […]
+        // 0: Array [ "CSS", 13746 ]
+        // 1: Array [ "HTML", 11864 ]
+        // length: 2
+        // __proto__: Array []
+
+    bigAryOfObjs.push(kv_pairs)
   }
-  bigArrOfArrays = bigArrOfArrays.reduce((a, b) => a.concat(b), [])
-  let arrOfLangs = bigArrOfArrays.map((lang) => lang[0]).reduce((a, b) => a.concat(b), [])
-  let unique = [...new Set(arrOfLangs)]
-  let newTotalCounts = []
-  let totalCountObjForU = {}
-  for (let u = 0; u < unique.length; u++) {
-    let langCountforU = []
-    for (let l = 0; l < bigArrOfArrays.length; l++) {
-      if (unique[u] === bigArrOfArrays[l][0]) {
-        langCountforU.push(bigArrOfArrays[l][1])
-      }
-    }
-    langCountforU = langCountforU.reduce((acc, curr) => acc + curr, 0)
-    totalCountObjForU = {
-      language: unique[u],
-      counts: langCountforU
-    }
-    newTotalCounts.push(totalCountObjForU)
+  console.log(bigAryOfObjs)
+    // Sample output, bigAryOfObjs is a bunch of arrays within arrays now
+    // […]
+    // 0: […]
+      // 0: Array [ "JavaScript", 6886 ]
+      // 1: Array [ "HTML", 810 ]
+      // length: 2
+      // __proto__: Array []
+    // 1: […]
+      // 0: Array [ "CSS", 13746 ]
+      // 1: Array [ "HTML", 11864 ]
+      // length: 2
+      // __proto__: Array []
+  bigAryOfObjs = bigAryOfObjs.reduce((a, b) => a.concat(b), [])
+  console.log(bigAryOfObjs)
+  // […]
+    // [0…99]
+      // 0: Array [ "JavaScript", 6886 ]
+      // 1: Array [ "HTML", 810 ]
+      // 2: Array [ "CSS", 13746 ]
+      // 3: Array [ "HTML", 11864 ]
+      // 4: Array [ "Ruby", 17820 ]
+  let arrOfLangs = bigAryOfObjs.map((lang) => lang[0]).reduce((a, b) => a.concat(b), [])
+  console.log(arrOfLangs)
+    // […]
+    //   [0…99]
+    //   0: "JavaScript"
+    //   1: "HTML"
+    //   2: "CSS"
+    //   3: "HTML"
+    //   4: "Ruby"
+
+  // The following 2 methods select unique values from an array.
+   // First, the function below combined with .filter
+  function onlyUnique (value, index, self) {
+    return self.indexOf(value) === index
   }
-  console.log(newTotalCounts)
+  let unique = arrOfLangs.filter(onlyUnique)
+
+  // Second, one can also use the Set constructor along with the spread operater to redefine the Set as an array
+  // let unique = [...new Set(arrOfLangs)]
+  console.log(unique)
+    // […]
+    //   0: "JavaScript"
+    //   1: "HTML"
+    //   2: "CSS"
+    //   3: "Ruby"
+    //   4: "CoffeeScript"
+    //   5: "Shell"
+    //   length: 6
+    //   __proto__: Array []
+
+  let jsArr = bigAryOfObjs.filter(item => item[0] === 'JavaScript')
+  console.log(jsArr)
+  // […]
+    // 0: Array [ "JavaScript", 6886 ]
+    // 1: Array [ "JavaScript", 11119 ]
+    // 2: Array [ "JavaScript", 17187 ]
+    // 3: Array [ "JavaScript", 10989 ]
+    // 4: Array [ "JavaScript", 13454 ]
+  let jsArrCounts = jsArr.map(getCount => getCount[1])
+  console.log(jsArrCounts)
+  //   […]
+    // 0: 6886
+    // 1: 11119
+    // 2: 17187
+    // 3: 10989
+    // 4: 13454
+  let jsCount = jsArrCounts.reduce((acc, cur) => acc + cur, 0)
+  console.log(jsCount)
+  // 252004
 }
 
 function tallyLangByteCounts (langBytesAryofObjs) {
