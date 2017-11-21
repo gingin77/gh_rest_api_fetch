@@ -1,0 +1,16 @@
+var data = [{
+		"language": "Ruby",
+		"count": 8
+	},
+	{
+		"language": "JavaScript",
+		"count": 12
+		},
+	{
+		"language": "CSS",
+		"count": 5
+		},
+	{
+	"language": "HTML",
+	"count": 3
+}]
