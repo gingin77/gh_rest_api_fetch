@@ -1,21 +1,36 @@
-d3.json('static_data/compObj_46_repos.json', function (gitHubData) {
-  console.log(gitHubData)
-  let dataObj = gitHubData
-
-  function getDataForScatterPlot (array) {
-    let data = array.map(function (objs) {
-      return {
-        pushed_at: objs.pushed_at,
-        repo_name: objs.repo_name,
-        all_lang_bytes_for_repo: objs.all_lang_bytes_for_repo
-      }
-    })
-    return data
+d3.json('static_data/compObj_46_repos.json', function (data) {
+  function strToDtSingle (d) {
+    return new Date(d)
   }
-  let scatterData = getDataForScatterPlot(dataObj)
+  let w = strToDtSingle("2017-07-10T01:26:21Z")
+  console.log(w)
+  console.log(typeof w)
 
-  // Parse the date / time
-  // var strictIsoParse = d3.utcParse('%Y-%m-%dT%H:%M:%S.%LZ')
+  let dataDate = strToDtSingle(data[0].pushed_at)
+  console.log(dataDate)
+  console.log(typeof dataDate)
+  // var formatTime = d3.timeFormat("%d-%b-%y")
+
+  data.forEach(function (d) {
+    // d.date = formatTime(strToDtSingle(d.pushed_at))
+    d.name = d.repo_name
+    // d.number = Object.values(d.all_lang_bytes_for_repo)
+  })
+  console.log(data[0].pushed_at)
+
+  let scdX = data.map((item) => item.pushed_at)
+    .reduce(function (a, b) {
+      return a.concat(b)
+    }, []
+  )
+  console.log(scdX)
+
+  let sortScdX = scdX.sort(function (a, b) {
+    return Date.parse(a) > Date.parse(b)
+  })
+  console.log(sortScdX)
+
+  let prsdDts = strToDt(sortScdX)
 
   function strToDt (arrOfDtStrs) {
     let cnsTructedDts = []
@@ -35,40 +50,18 @@ d3.json('static_data/compObj_46_repos.json', function (gitHubData) {
     return parsedDates
   }
 
-  function strToDtSingle (datesting) {
-    let date = new Date(datesting)
-    let yr = date.getUTCFullYear()
-    let day = date.getUTCDate()
-    let month = date.getUTCMonth()
-    date = yr + '-' + month + '-' + day
-    return date
-  }
-  // let prsdDts = strToDt(sortScdX)
-  // console.log(prsdDts)
-  // console.log(typeof prsdDts[0])
+  let dateMin = strToDtSingle(prsdDts[0])
+  console.log(prsdDts[0])
+  console.log(dateMin)
+  let dateMax = strToDtSingle(prsdDts[prsdDts.length - 1])
+  console.log(prsdDts[prsdDts.length - 1])
+  console.log(dateMax)
 
-  gitHubData.forEach(function(d) {
-    d.date = strToDtSingle(d.pushed_at)
-    d.name = d.repo_name
-    // d.number = Object.values(d.all_lang_bytes_for_repo)
-    console.log(d.date)
-  })
-  console.log(gitHubData)
-
-
-
-
-  let scdX = scatterData.map((item) => item.pushed_at)
-    .reduce(function (a, b) {
-      return a.concat(b)
-    }, []
-  )
-
-  let firstLangByteNum = getFirsLangCount(scatterData)
-  function getFirsLangCount (scatterData) {
+  let firstLangByteNum = getFirsLangCount(data)
+  function getFirsLangCount (data) {
     let newArr = []
-    for (let i = 0; i < scatterData.length; i++) {
-      let countsForFirstLang = Object.values(scatterData[i].all_lang_bytes_for_repo)
+    for (let i = 0; i < data.length; i++) {
+      let countsForFirstLang = Object.values(data[i].all_lang_bytes_for_repo)
       countsForFirstLang = countsForFirstLang.reduce((acc, cur) => acc + cur, 0)
       newArr.push(countsForFirstLang)
     }
@@ -78,27 +71,6 @@ d3.json('static_data/compObj_46_repos.json', function (gitHubData) {
     )
     return newArr
   }
-
-  let sortScdX = scdX.sort(function (a, b) {
-    return Date.parse(a) > Date.parse(b)
-  })
-
-  let mockData = makeMockData(prsdDts, firstLangByteNum)
-  function makeMockData (array1, array2) {
-    let newArrOfObjs = []
-    for (let p = 0; p < array1.length; p++) {
-      let newObj = {}
-      newObj = {
-        date: array1[p],
-        number: array2[p]
-      }
-      newArrOfObjs.push(newObj)
-    }
-    return newArrOfObjs
-  }
-
-  let dateMin = prsdDts[0]
-  let dateMax = prsdDts[prsdDts.length - 1]
 
   var margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = 700 - margin.left - margin.right,
@@ -125,18 +97,18 @@ d3.json('static_data/compObj_46_repos.json', function (gitHubData) {
     .attr('transform',
         'translate(' + margin.left + ',' + margin.top + ')')
 
-  // draw dots
-  svg.selectAll("dot")
-      .data(mockData)
-    .enter().append("circle")
-      .attr("r", 3.5)
-      .attr("cx", function(d) { return x(d.date); })
-      .attr("cy", function(d) { return y(d.number); })
-
   // Add the x Axis
   svg.append('g')
       .attr('transform', 'translate(0,' + height + ')')
       .call(d3.axisBottom(x))
+
+  // draw dots
+  svg.selectAll('dot')
+      .data(data)
+    .enter().append('circle')
+      .attr('r', 3.5)
+      .attr('cx', function (d) { return strToDtSingle(d) })
+      // .attr('cy', function (d) { return y(d.name) })
 
   // text label for the x axis
   svg.append('text')
