@@ -1,15 +1,5 @@
 [
   {
-    "repo_name": "hamming",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/hamming/languages",
-    "primary_repo_lang": "Ruby",
-    "created_at": "2017-09-11T22:34:46Z",
-    "pushed_at": "2017-09-12T00:30:59Z",
-    "all_lang_bytes_for_repo": {
-      "Ruby": 2785
-    }
-  },
-  {
     "repo_name": "iTunes_API",
     "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/iTunes_API/languages",
     "primary_repo_lang": "CSS",
@@ -19,6 +9,16 @@
       "CSS": 7928,
       "JavaScript": 5646,
       "HTML": 1692
+    }
+  },
+  {
+    "repo_name": "hamming",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/hamming/languages",
+    "primary_repo_lang": "Ruby",
+    "created_at": "2017-09-11T22:34:46Z",
+    "pushed_at": "2017-09-12T00:30:59Z",
+    "all_lang_bytes_for_repo": {
+      "Ruby": 2785
     }
   },
   {

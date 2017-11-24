@@ -1,18 +1,7 @@
-d3.json('static_data/four_obj_test.json', function (data) {
+d3.json('static_data/compObj_46_repos.json', function (data) {
   function strToDtSingle (d) {
     return new Date(d)
   }
-
-  //
-  // if (compare === array2[q].url_for_all_repo_langs) {
-  //   comprehensiveObj = {
-  //     repo_name: array1[i].repo_name,
-  //     url_for_all_repo_langs: array1[i].url_for_all_repo_langs,
-  //     primary_repo_lang: array1[i].primary_repo_lang,
-  //     created_at: array1[i].created_at,
-  //     pushed_at: array1[i].pushed_at,
-  //     all_lang_bytes_for_repo: array2[q].all_lang_bytes_for_repo
-  //   }
 
   let myData = data
   transformLangObj(myData)
@@ -22,35 +11,45 @@ d3.json('static_data/four_obj_test.json', function (data) {
     myData.map(function (obj) {
       let lObj = obj.all_lang_bytes_for_repo
       let nArr = []
-      // console.log(lObj)
       Object.keys(lObj).forEach(key => {
         let nKVP = {
           language: key,
-          value: lObj[key]
+          count: lObj[key]
         }
-        // console.log(nKVP)
         nArr.push(nKVP)
       })
-      // console.log(nArr)
       obj.all_lang_bytes_for_repo = nArr
     })
-    // console.log(myData)
   }
 
+  let langBytesFirst = makeBytesFirst(myData)
+  function makeBytesFirst (myData) {
+    let newDataObjsArr = []
+    myData.map(function (repObj) {
+      let bytObj = repObj.all_lang_bytes_for_repo
+      console.log(bytObj)
+      let newDataObj = {}
+      bytObj.map(function (langByteObj) {
+        newDataObj = {
+          'language': langByteObj.language,
+          'count': langByteObj.count,
+          'repo_name': repObj.repo_name,
+          'pushed_at': repObj.pushed_at,
+          'primary_repo_lang': repObj.primary_repo_lang,
+          'url_for_all_repo_langs': repObj.url_for_all_repo_langs
+        }
+        newDataObjsArr.push(newDataObj)
+      })
+    })
+    return newDataObjsArr
+  }
+  console.log(langBytesFirst)
+
   let dataByDate = d3.nest().key(function(d) {return d.pushed_at; })
-  console.log(dataByDate.entries(myData).map((item) => item.values[0]))
+  console.log(dataByDate.entries(myData).map((item) => item))
 
-  // console.log(dataByDate.entries(myData).map((item) => item.values[0].all_lang_bytes_for_repo))
-  // ^^ returns
-  // […]
-    // 0: Object { Ruby: 2785 }
-    // 1: Object {  }
-    // 2: Object { CSS: 7928, JavaScript: 5646, HTML: 1692 }
-    // 3: Object { JavaScript: 3465, HTML: 133 }
-    // length: 4
-    // __proto__: Array []
-
-    // interestingly, I cannot output .numbers, even though it is listed among the values
+  let dataByLangByte = d3.nest().key(function (d) { return d.all_lang_bytes_for_repo.map((obj) => obj.language) })
+  console.log(dataByLangByte.entries(myData).map((item) => item))
 
   data.forEach(function (d) {
     // d.test = d3.map([d3.entries(d.all_lang_bytes_for_repo)], function(d) {return d.value })
@@ -134,15 +133,15 @@ d3.json('static_data/four_obj_test.json', function (data) {
   let x = d3.scaleTime()
     .domain([dateMin, dateMax])
     .range([0, width])
-    console.log(dateMin)
-    console.log(x(dateMin))
-    console.log(dateMax)
-    console.log(x(dateMax))
+    // console.log(dateMin)
+    // console.log(x(dateMin))
+    // console.log(dateMax)
+    // console.log(x(dateMax))
 
   let y = d3.scaleLinear()
     .domain([0, 20000])
     .range([height, 0])
-    console.log(y(1000))
+    // console.log(y(1000))
 
   // Adds the svg canvas
   var svg = d3.select('body')
@@ -157,11 +156,11 @@ d3.json('static_data/four_obj_test.json', function (data) {
 
   // draw dots
   svg.selectAll('dot')
-      .data(data)
+      .data(langBytesFirst)
     .enter().append('circle')
       .attr('r', 3.5)
       .attr('cx', function (d) { return x(strToDtSingle(d.pushed_at)) })
-      // .attr('cy', function (d) { return y(d.numbers.map((item) => item))
+      .attr('cy', function (d) { return y(d.count) })
 
   // Add the x Axis
   svg.append('g')
