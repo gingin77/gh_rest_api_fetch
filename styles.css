@@ -1,10 +1,11 @@
 body{
   max-width: 800px;
+  font-family: 'Josefin Sans', sans-serif;
+  border: red solid 2px;
 }
 section{
   margin: 20px;
   padding: 20px;
-  font-family: 'Josefin Sans', sans-serif;
   color: #060026;
 }
 #wrapper{
@@ -28,14 +29,17 @@ section{
 }
 svg {
   padding: 20px;
+  border: purple solid 2px;
 }
 rect {
   fill: #060026;
 }
+
 text {
-  fill: white;
+  fill: black;
   font-family: 'Josefin Sans', sans-serif;
 }
+
 text.yAxis {
   font-size: 14px;
   font-family: 'Josefin Sans', sans-serif;
@@ -43,6 +47,21 @@ text.yAxis {
   z-index: 10;
 }
 
-.cell {
+.label {
+  font-size: 14px;
+  font-family: 'Josefin Sans', sans-serif;
+  fill: black;
+  z-index: 10;
+}
+
+.tooltip {
   position: absolute;
+  width: 200px;
+  height: 28px;
+  pointer-events: none;
+  font-size: small;
+}
+
+.legend_label{
+  font-size: 12px;
 }
