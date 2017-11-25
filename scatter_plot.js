@@ -5,7 +5,6 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
 
   let myData = data
   transformLangObj(myData)
-  console.log(myData)
 
   function transformLangObj (myData) {
     myData.map(function (obj) {
@@ -27,7 +26,6 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     let newDataObjsArr = []
     myData.map(function (repObj) {
       let bytObj = repObj.all_lang_bytes_for_repo
-      console.log(bytObj)
       let newDataObj = {}
       bytObj.map(function (langByteObj) {
         newDataObj = {
@@ -43,77 +41,9 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     })
     return newDataObjsArr
   }
-  console.log(langBytesFirst)
 
-  let dataByDate = d3.nest().key(function(d) {return d.pushed_at; })
-  console.log(dataByDate.entries(myData).map((item) => item))
-
-  let dataByLangByte = d3.nest().key(function (d) { return d.all_lang_bytes_for_repo.map((obj) => obj.language) })
-  console.log(dataByLangByte.entries(myData).map((item) => item))
-
-  data.forEach(function (d) {
-    // d.test = d3.map([d3.entries(d.all_lang_bytes_for_repo)], function(d) {return d.value })
-    let testKeys = d3.keys(d.all_lang_bytes_for_repo)
-    // console.log(testKeys)
-
-    d.numbers = d3.values(d.all_lang_bytes_for_repo)
-    // console.log(d.numbers)
-    let test2 = 0
-    let number = d.numbers.map( function (item) {
-      test2 = item
-    })
-    // console.log(number)
-    // d.numbers = testValues.map((item) => item)
-    // console.log(d.numbers)
-    let testValuesMap = d3.map(d.numbers)
-    // // ^^ sample output:
-    // Object { "$0": 7928, "$1": 5646, "$2": 1692 }
-
-    let values1 = testValuesMap.each( function(d) { return d.values })
-    // console.log(values1)
-
-
-    d.test = d3.entries(d.all_lang_bytes_for_repo)
-    // ^^gives an array containing an Object where output is:
-        //     […]
-        // 0: Object { key: "Ruby", value: 2785 }
-        // length: 1
-        // __proto__: Array []
-    let map = d3.map(d.test)
-    // ^^ gives an Object containing an Object. Outpus is:
-    //     {…}
-    // "$0": Object { key: "Ruby", value: 2785 }
-    // __proto__: Object { constructor: t(), has: has(), get: get(), … }
-
-    let mapToo = d3.map(d.all_lang_bytes_for_repo)
-    // ^^ give back the following 2 output examples:
-    // {…}
-      // "$Ruby": 2785
-      // __proto__: Object { constructor: t(), has: has(), get: get(), … }
-      // scatter_plot.js:31:5
-      // Object {  }
-      // scatter_plot.js:31:5
-    // {…}
-      // "$CSS": 7928
-      // "$HTML": 1692
-      // "$JavaScript": 5646
-
-
-    // let values = map.get(value)
-    // d.values = d3.values(d.test)
-    // var propertyNest = d3.nest()
-    //   propertyNest.key(function(d){return d})
-    //   propertyNest.key(function(d){return d.test})
-    //   propertyNest.entries(data.properties)
-    //
-    // d.numbers =
-    // console.log(d.test)
-    console.log(mapToo)
-    // console.log(map.values())
-    // console.log(values)
-    // d.numbers = d3.map([], function (d) { return d.values })
-
-    // console.log(d.numbers)
+  langBytesFirst.forEach(function (d) {
+    d.language = d.language
   })
 
   let pushedAtDates = data.map((item) => item.pushed_at)
@@ -124,24 +54,32 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
   let dateMin = srtdPshDtArray[0],
     dateMax = srtdPshDtArray[srtdPshDtArray.length - 1]
 
-
-
   let margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = 700 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom
 
-  let x = d3.scaleTime()
-    .domain([dateMin, dateMax])
-    .range([0, width])
-    // console.log(dateMin)
-    // console.log(x(dateMin))
-    // console.log(dateMax)
-    // console.log(x(dateMax))
+    // setup x
+    var xScale = d3.scaleTime().domain([dateMin, dateMax]).range([0, width]), // value -> display
+      xValue = function (d) { return xScale(strToDtSingle(d.pushed_at)) } // data -> value
+
+    // xMap = function(d) { return xScale(xValue(d)) }, // data -> display
+    // xAxis = d3.svg.axis().scale(xScale).orient("bottom")
+
+  // // setup y
+  // var yValue = function(d) { return d["Protein (g)"];}, // data -> value
+  //     yScale = d3.scale.linear().range([height, 0]), // value -> display
+  //     yMap = function(d) { return yScale(yValue(d));}, // data -> display
+  //     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   let y = d3.scaleLinear()
-    .domain([0, 20000])
+    .domain([0, 170000])
     .range([height, 0])
-    // console.log(y(1000))
+
+  // setup fill color
+  let cValue = function (d) { return d.language },
+      color = d3.scaleOrdinal()
+      .range(['blue', 'red', 'purple', 'green', 'Orange'])
+      .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript'])
 
   // Adds the svg canvas
   var svg = d3.select('body')
@@ -154,29 +92,44 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     .attr('transform',
         'translate(' + margin.left + ',' + margin.top + ')')
 
+  // add the tooltip area to the webpage
+  var tooltip = d3.select('body').append('div')
+      .attr('class', 'tooltip')
+      .style('opacity', 0)
+
   // draw dots
   svg.selectAll('dot')
       .data(langBytesFirst)
     .enter().append('circle')
       .attr('r', 3.5)
-      .attr('cx', function (d) { return x(strToDtSingle(d.pushed_at)) })
+      .attr('cx', xValue)
       .attr('cy', function (d) { return y(d.count) })
+      .style("fill", function(d) { return color(cValue(d)) })
+      .on("mouseover", function(d) {
+          tooltip.transition()
+               .duration(200)
+               .style("opacity", 1)
+          tooltip.html(d.language + "<br/>" + d.repo_name)
+               .style("left", (d3.event.pageX + 5) + "px")
+               .style("top", (d3.event.pageY - 28) + "px")
+      })
+      .on("mouseout", function(d) {
+          tooltip.transition()
+               .duration(500)
+               .style("opacity", 0)
+      });
 
   // Add the x Axis
   svg.append('g')
+      .attr('class', 'x axis')
       .attr('transform', 'translate(0,' + height + ')')
-      .call(d3.axisBottom(x))
-
-  // text label for the x axis
-  svg.append('text')
-      .attr('transform',
-            'translate(' + (width / 2) + ' ,' +
-                           (height + margin.top + 20) + ')')
-      .style('text-anchor', 'middle')
+      .call(d3.axisBottom(xScale))
+    .append('text')
       .text('Date')
 
   // Add the y Axis
   svg.append('g')
+    .attr('class', 'y axis')
       .call(d3.axisLeft(y))
 
   // text label for the y axis
@@ -186,5 +139,5 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
       .attr('x', 0 - (height / 2))
       .attr('dy', '1em')
       .style('text-anchor', 'middle')
-      .text('Value')
+      .text('Bytes')
 })
