@@ -112,7 +112,7 @@ function enrichUrls (arrayOfLangObjs) {
   console.log('enrichUrls was called')
   let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
     new Date(b.pushed_at) - new Date(a.pushed_at)
-  ).slice(0, 30)
+  )
   neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
   getAllLanguageBytes(neededlangByteUrls)
 }

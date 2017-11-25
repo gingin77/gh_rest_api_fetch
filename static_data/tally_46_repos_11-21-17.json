@@ -1,0 +1,26 @@
+[
+  {
+    "language": "JavaScript",
+    "count": 252004
+  },
+  {
+    "language": "HTML",
+    "count": 161140
+  },
+  {
+    "language": "CSS",
+    "count": 232503
+  },
+  {
+    "language": "Ruby",
+    "count": 311962
+  },
+  {
+    "language": "CoffeeScript",
+    "count": 2954
+  },
+  {
+    "language": "Shell",
+    "count": 131
+  }
+]
