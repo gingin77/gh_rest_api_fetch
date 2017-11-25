@@ -26,40 +26,62 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     let newDataObjsArr = []
     myData.map(function (repObj) {
       let bytObj = repObj.all_lang_bytes_for_repo
+      console.log(bytObj.length)
       let newDataObj = {}
-      bytObj.map(function (langByteObj) {
+      if (bytObj.length !== 0) {
+        bytObj.map(function (langByteObj) {
+          newDataObj = {
+            'language': langByteObj.language,
+            'count': langByteObj.count,
+            'repo_name': repObj.repo_name,
+            'pushed_at': repObj.pushed_at,
+            'primary_repo_lang': repObj.primary_repo_lang,
+            'url_for_all_repo_langs': repObj.url_for_all_repo_langs
+          }
+          newDataObjsArr.push(newDataObj)
+        })
+      } else {
         newDataObj = {
-          'language': langByteObj.language,
-          'count': langByteObj.count,
+          'language': "null",
+          'count': 0,
           'repo_name': repObj.repo_name,
           'pushed_at': repObj.pushed_at,
-          'primary_repo_lang': repObj.primary_repo_lang,
+          'primary_repo_lang': "na",
           'url_for_all_repo_langs': repObj.url_for_all_repo_langs
         }
         newDataObjsArr.push(newDataObj)
-      })
+      }
     })
     return newDataObjsArr
   }
-
-  langBytesFirst.forEach(function (d) {
-    d.language = d.language
-  })
+  console.log(langBytesFirst)
 
   let pushedAtDates = data.map((item) => item.pushed_at)
     .reduce((a, b) => a.concat(b), []),
     srtdPshDtArray = pushedAtDates.map((item) => new Date(item))
     .sort((a, b) => Date.parse(a) > Date.parse(b))
 
+  let sortbyDate = d3.nest()
+    .key(function (d) { return d.pushed_at })
+    .sortKeys(d3.ascending)
+    .entries(langBytesFirst)
+
   let dateMin = srtdPshDtArray[0],
     dateMax = srtdPshDtArray[srtdPshDtArray.length - 1]
+
+  let minDate = new Date(sortbyDate[0].key),
+    maxDate = new Date(sortbyDate[sortbyDate.length - 1].key)
+  console.log(minDate)
+  console.log(dateMin)
+  console.log(maxDate)
+  console.log(dateMax)
 
   let margin = {top: 10, right: 10, bottom: 10, left: 10},
     width = 700 - margin.left - margin.right,
     height = 300 - margin.top - margin.bottom
 
     // setup x
-    var xScale = d3.scaleTime().domain([dateMin, dateMax]).range([0, width]), // value -> display
+    var xScale = d3.scaleTime().domain([minDate, maxDate]).range([0, width]), // value -> display
       xValue = function (d) { return xScale(strToDtSingle(d.pushed_at)) } // data -> value
 
     // xMap = function(d) { return xScale(xValue(d)) }, // data -> display
@@ -72,8 +94,12 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
   //     yAxis = d3.svg.axis().scale(yScale).orient("left");
 
   let y = d3.scaleLinear()
-    .domain([0, 170000])
+    .domain([0, 40000]) //  76,444 for JS, Weekend_2_assignment and 165855 for github.io,
     .range([height, 0])
+
+  // const start = new Date(2015, 0, 9);
+  // const end = new Date(2015, 0, 10);
+  // const range = discontinuityRange([start, end]);
 
   // setup fill color
   let cValue = function (d) { return d.language },
