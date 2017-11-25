@@ -22,11 +22,11 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
   }
 
   let langBytesFirst = makeBytesFirst(myData)
+
   function makeBytesFirst (myData) {
     let newDataObjsArr = []
     myData.map(function (repObj) {
       let bytObj = repObj.all_lang_bytes_for_repo
-      console.log(bytObj.length)
       let newDataObj = {}
       if (bytObj.length !== 0) {
         bytObj.map(function (langByteObj) {
@@ -42,11 +42,11 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
         })
       } else {
         newDataObj = {
-          'language': "null",
+          'language': 'Null',
           'count': 0,
           'repo_name': repObj.repo_name,
           'pushed_at': repObj.pushed_at,
-          'primary_repo_lang': "na",
+          'primary_repo_lang': 'na',
           'url_for_all_repo_langs': repObj.url_for_all_repo_langs
         }
         newDataObjsArr.push(newDataObj)
@@ -54,116 +54,146 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     })
     return newDataObjsArr
   }
-  console.log(langBytesFirst)
-
-  let pushedAtDates = data.map((item) => item.pushed_at)
-    .reduce((a, b) => a.concat(b), []),
-    srtdPshDtArray = pushedAtDates.map((item) => new Date(item))
-    .sort((a, b) => Date.parse(a) > Date.parse(b))
 
   let sortbyDate = d3.nest()
-    .key(function (d) { return d.pushed_at })
+    .key(function (d) {
+      return d.pushed_at
+    })
     .sortKeys(d3.ascending)
     .entries(langBytesFirst)
 
-  let dateMin = srtdPshDtArray[0],
-    dateMax = srtdPshDtArray[srtdPshDtArray.length - 1]
-
   let minDate = new Date(sortbyDate[0].key),
-    maxDate = new Date(sortbyDate[sortbyDate.length - 1].key)
-  console.log(minDate)
-  console.log(dateMin)
-  console.log(maxDate)
-  console.log(dateMax)
+    maxDate = new Date(sortbyDate[sortbyDate.length - 1].key),
+    xMax = addOneWeek(maxDate)
 
-  let margin = {top: 10, right: 10, bottom: 10, left: 10},
-    width = 700 - margin.left - margin.right,
-    height = 300 - margin.top - margin.bottom
+  function addOneWeek (maxDate) {
+    let day = maxDate.getDate()
+    let month = maxDate.getMonth()
+    let yr = maxDate.getFullYear()
+    if ((day + 7) < 28) {
+      return new Date(yr + '-' + month + '-' + (day + 7))
+    } else {
+      return new Date(yr + '-' + (month + 2) + '-' + 7)
+    }
+  }
 
-    // setup x
-    var xScale = d3.scaleTime().domain([minDate, maxDate]).range([0, width]), // value -> display
-      xValue = function (d) { return xScale(strToDtSingle(d.pushed_at)) } // data -> value
+  let margin = {
+      top: 10,
+      right: 80,
+      bottom: 40,
+      left: 10
+    },
+    width = 740 - margin.left,
+    height = 340 - margin.top - margin.bottom
 
-    // xMap = function(d) { return xScale(xValue(d)) }, // data -> display
-    // xAxis = d3.svg.axis().scale(xScale).orient("bottom")
+  // setup x
+  let xScale = d3.scaleTime().domain([minDate, xMax]).range([margin.right, width]),
+    xValue = function (d) {
+      return xScale(strToDtSingle(d.pushed_at))
+    },
+    xAxis = d3.axisBottom(xScale).ticks(d3.timeWeek.every(2)).tickFormat(d3.timeFormat('%b %e'))
 
-  // // setup y
-  // var yValue = function(d) { return d["Protein (g)"];}, // data -> value
-  //     yScale = d3.scale.linear().range([height, 0]), // value -> display
-  //     yMap = function(d) { return yScale(yValue(d));}, // data -> display
-  //     yAxis = d3.svg.axis().scale(yScale).orient("left");
+  // setup y
+  let yScale = d3.scaleLinear().domain([0, 42000]).range([height - 2, 0]),
+    yValue = function (d) {
+      return yScale(d.count)
+    },
+    yAxis = d3.axisLeft(yScale)
 
-  let y = d3.scaleLinear()
-    .domain([0, 40000]) //  76,444 for JS, Weekend_2_assignment and 165855 for github.io,
-    .range([height, 0])
+  //  Two outlier data points: 76,444 for JS, Weekend_2_assignment and 165855 for github.io,
+  // If setting up a discontinuous range on the y-axis, use code snippet below
+  // let yScale = fc.scaleDiscontinuous(d3.scaleLinear())
+  //   .discontinuityProvider(fc.discontinuityRange([42000, 74000]))
+  //   .domain([0, 81000])
+  //   .range([height - 2, 0])
 
-  // const start = new Date(2015, 0, 9);
-  // const end = new Date(2015, 0, 10);
-  // const range = discontinuityRange([start, end]);
-
-  // setup fill color
-  let cValue = function (d) { return d.language },
-      color = d3.scaleOrdinal()
-      .range(['blue', 'red', 'purple', 'green', 'Orange'])
-      .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript'])
-
-  // Adds the svg canvas
-  var svg = d3.select('body')
+  // Add the svg canvas
+  let svg = d3.select('body')
     .append('svg')
-    .attr('width', width + margin.left + margin.right)
+    .attr('width', width + margin.left)
     .attr('height', height + margin.top + margin.bottom)
 
-  var g = svg.selectAll('g')
-    .append('g')
-    .attr('transform',
-        'translate(' + margin.left + ',' + margin.top + ')')
-
-  // add the tooltip area to the webpage
-  var tooltip = d3.select('body').append('div')
-      .attr('class', 'tooltip')
-      .style('opacity', 0)
-
-  // draw dots
-  svg.selectAll('dot')
-      .data(langBytesFirst)
-    .enter().append('circle')
-      .attr('r', 3.5)
-      .attr('cx', xValue)
-      .attr('cy', function (d) { return y(d.count) })
-      .style("fill", function(d) { return color(cValue(d)) })
-      .on("mouseover", function(d) {
-          tooltip.transition()
-               .duration(200)
-               .style("opacity", 1)
-          tooltip.html(d.language + "<br/>" + d.repo_name)
-               .style("left", (d3.event.pageX + 5) + "px")
-               .style("top", (d3.event.pageY - 28) + "px")
-      })
-      .on("mouseout", function(d) {
-          tooltip.transition()
-               .duration(500)
-               .style("opacity", 0)
-      });
+  let g = svg.selectAll('g')
 
   // Add the x Axis
   svg.append('g')
-      .attr('class', 'x axis')
-      .attr('transform', 'translate(0,' + height + ')')
-      .call(d3.axisBottom(xScale))
+    .attr('transform', 'translate(0,' + height + ')')
+    .call(xAxis)
     .append('text')
-      .text('Date')
+    .attr('class', 'label')
+    .attr('x', (width / 2) + 20)
+    .attr('y', 40)
+    .text('Date of Most Recent Commit')
 
   // Add the y Axis
   svg.append('g')
-    .attr('class', 'y axis')
-      .call(d3.axisLeft(y))
+    .attr('transform', 'translate(' + margin.right + ', 0)')
+    .call(yAxis)
+    .append('text')
+    .attr('class', 'label')
+    .attr('transform', 'rotate(-90)')
+    .attr('y', (-1 * margin.right) + 10)
+    .attr('x', 0 - (height / 2))
+    .attr('dy', '1em')
+    .style('text-anchor', 'middle')
+    .text('Number of Bytes Stored')
 
-  // text label for the y axis
-  svg.append('text')
-      .attr('transform', 'rotate(-90)')
-      .attr('y', 0 - margin.left)
-      .attr('x', 0 - (height / 2))
-      .attr('dy', '1em')
-      .style('text-anchor', 'middle')
-      .text('Bytes')
+  // setup dot colors
+  let cValue = function (d) { return d.language }
+  let color = d3.scaleOrdinal()
+    .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript', 'Shell', 'Null'])
+    .range(['blue', 'red', 'purple', 'green', 'Orange', 'black', 'black'])
+
+  // draw dots
+  svg.selectAll('dot')
+    .data(langBytesFirst)
+    .enter().append('circle')
+    .attr('r', 3.5)
+    .attr('cx', xValue)
+    .attr('cy', yValue)
+    .style('fill', function (d) { return color(cValue(d)) })
+    .on('mouseover', function (d) {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', 1)
+      tooltip.html(d.language + '<br/>' + d.repo_name)
+        .style('left', (d3.event.pageX + 4) + 'px')
+        .style('top', (d3.event.pageY - 12) + 'px')
+    })
+    .on('mouseout', function (d) {
+      tooltip.transition()
+        .duration(200)
+        .style('opacity', 0)
+    })
+
+  // add the tooltip area to the webpage
+  let tooltip = d3.select('body').append('div')
+    .attr('class', 'tooltip')
+    .style('opacity', 0)
+
+  let lcolor = d3.scaleOrdinal()
+    .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript', 'Shell/Null'])
+    .range(['blue', 'red', 'purple', 'green', 'Orange', 'black'])
+
+  let legend = svg.selectAll('.legend')
+    .data(lcolor.domain())
+    .enter().append('g')
+    .attr('class', 'legend')
+    .attr('transform', function (d, i) {
+      return 'translate(1,' + i * 16 + ')'
+    })
+
+  legend.append('rect')
+    .attr('x', width - 18)
+    .attr('width', 14)
+    .attr('height', 14)
+    .style('fill', lcolor)
+
+  legend.append('text')
+    .attr('class', 'legend_label')
+    .attr('x', width - 24)
+    .attr('y', 9)
+    .attr('dy', '.35em')
+    .style('text-anchor', 'end')
+    .text(function (d) { return d })
 })
