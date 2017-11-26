@@ -537,10 +537,9 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
   function strToDtSingle (d) {
     return new Date(d)
   }
-console.log(inPageData)
 
-  // let myData = data
-  let myData = inPageData
+  let myData = data
+  // let myData = inPageData
   console.log(myData)
   transformLangObj(myData)
 
