@@ -65,15 +65,31 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
   let minDate = new Date(sortbyDate[0].key),
     maxDate = new Date(sortbyDate[sortbyDate.length - 1].key),
     xMax = addOneWeek(maxDate)
+    xMin = subtrOneWeek(minDate)
+    console.log(xMin)
+    console.log(minDate)
 
   function addOneWeek (maxDate) {
     let day = maxDate.getDate()
     let month = maxDate.getMonth()
     let yr = maxDate.getFullYear()
     if ((day + 7) < 28) {
-      return new Date(yr + '-' + month + '-' + (day + 7))
+      return new Date(yr + '-' + (month + 1) + '-' + (day + 7))
     } else {
       return new Date(yr + '-' + (month + 2) + '-' + 7)
+    }
+  }
+
+  function subtrOneWeek (minDate) {
+    let day = minDate.getDate()
+    console.log(day)
+    let month = minDate.getMonth()
+    let yr = minDate.getFullYear()
+    if ((day - 3) < 1) {
+      console.log('(day - 3) <= 1)')
+      return new Date(yr + '-' + (month) + '-' + 28)
+    } else {
+      return new Date(yr + '-' + (month + 1) + '-' + (day - 3))
     }
   }
 
@@ -81,13 +97,13 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
       top: 10,
       right: 80,
       bottom: 40,
-      left: 10
+      left: 40
     },
     width = 740 - margin.left,
     height = 340 - margin.top - margin.bottom
 
   // setup x
-  let xScale = d3.scaleTime().domain([minDate, xMax]).range([margin.right, width]),
+  let xScale = d3.scaleTime().domain([xMin, xMax]).range([margin.right, width - margin.left]),
     xValue = function (d) {
       return xScale(strToDtSingle(d.pushed_at))
     },
@@ -99,18 +115,6 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
       return yScale(d.count)
     },
     yAxis = d3.axisLeft(yScale)
-
-   // Two outlier data points: 76,444 for JS, Weekend_2_assignment and 165855 for github.io,
-  // If setting up a discontinuous range on the y-axis, use code snippet below
-  // let discRngStart = 42000,
-  //   discRngEnd = 74000,
-  //   axisBreakSpace = 10,
-  //   yScale = fc.scaleDiscontinuous(d3.scaleLinear())
-  //     .discontinuityProvider(fc.discontinuityRange([discRngStart, discRngEnd]))
-  //     .domain([0, 81000])
-  //     .range([axisBreakSpace + height - 2, 0]),
-  //   yValue = function (d) { return yScale(d.count) },
-  //   yAxis = d3.axisLeft(yScale)
 
   // Add the svg canvas
   let svg = d3.select('body')
@@ -143,15 +147,16 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     .style('text-anchor', 'middle')
     .text('Number of Bytes Stored')
 
-    // .att('class', 'axis_break')
-    // .attr('y', (-1 * margin.right) + 10)
-    // .attr('x', 0 - (height / 2))
-
   // setup dot colors
-  let cValue = function (d) { return d.language }
-  let color = d3.scaleOrdinal()
+  let blue = '#457DB7',
+    red = '#991B67', /* '#B71808',  */
+    purple = '#A99CCD',
+    peach = '#E6AC93',  /*  '#CA602E', */
+    grey = '#8F8F90',
+  cValue = function (d) { return d.language },
+  color = d3.scaleOrdinal()
     .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript', 'Shell', 'Null'])
-    .range(['blue', 'red', 'purple', 'green', 'Orange', 'black', 'black'])
+    .range([blue, red, purple, peach, grey, grey, grey])
 
   // draw dots
   svg.selectAll('dot')
@@ -181,15 +186,15 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     .style('opacity', 0)
 
   let lcolor = d3.scaleOrdinal()
-    .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript', 'Shell/Null'])
-    .range(['blue', 'red', 'purple', 'green', 'Orange', 'black'])
+    .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript/Shell/Null'])
+    .range([blue, red, purple, peach, grey])
 
   let legend = svg.selectAll('.legend')
     .data(lcolor.domain())
     .enter().append('g')
     .attr('class', 'legend')
     .attr('transform', function (d, i) {
-      return 'translate(1,' + i * 16 + ')'
+      return 'translate(4,' + i * 18 + ')'
     })
 
   legend.append('rect')
@@ -201,7 +206,7 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
   legend.append('text')
     .attr('class', 'legend_label')
     .attr('x', margin.right + 22)
-    .attr('y', 9)
+    .attr('y', 7)
     .attr('dy', '.35em')
     .style('text-anchor', 'start')
     .text(function (d) { return d })

@@ -1,7 +1,6 @@
 body{
   max-width: 800px;
   font-family: 'Josefin Sans', sans-serif;
-  border: red solid 2px;
 }
 section{
   margin: 20px;
@@ -29,8 +28,8 @@ section{
 }
 svg {
   padding: 20px;
-  border: purple solid 2px;
 }
+
 rect {
   fill: #060026;
 }
@@ -56,7 +55,9 @@ text.yAxis {
 
 .tooltip {
   position: absolute;
-  width: 200px;
+  background-color: white;
+  opacity: 0.5;
+  width: 100px;
   height: 28px;
   pointer-events: none;
   font-size: small;
@@ -64,18 +65,4 @@ text.yAxis {
 
 .legend_label{
   font-size: 12px;
-}
-
-.axis_break path {
-  stroke: red;
-  stroke-width: 2;
-  fill: none;
-}
-
-.axis path,
-.axis line {
-  fill: none;
-  stroke: grey;
-  stroke-width: 2;
-  shape-rendering: crispEdges;
 }
