@@ -2,26 +2,30 @@ body{
   max-width: 800px;
   font-family: 'Josefin Sans', sans-serif;
 }
+
 section{
   margin: 20px;
   padding: 20px;
   color: #060026;
 }
+
 #wrapper{
   display: flex;
   flex-direction: row;
   justify-content: space-between;
-
 }
+
 #graphicOne, #graphicTwo{
   display: flex;
   flex-direction: column;
   max-height: 600px;
   text-align: center;
 }
+
 #graphicTwo{
   margin-left: 80px;
 }
+
 #byte_freq{
   padding: 0 19px 0 0;
   margin-left: -12px;
@@ -63,6 +67,6 @@ text.yAxis {
   font-size: small;
 }
 
-.legend_label{
+.legend_label {
   font-size: 12px;
 }
