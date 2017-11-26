@@ -9,27 +9,6 @@ section{
   color: #060026;
 }
 
-#wrapper{
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-}
-
-#graphicOne, #graphicTwo{
-  display: flex;
-  flex-direction: column;
-  max-height: 600px;
-  text-align: center;
-}
-
-#graphicTwo{
-  margin-left: 80px;
-}
-
-#byte_freq{
-  padding: 0 19px 0 0;
-  margin-left: -12px;
-}
 svg {
   padding: 20px;
 }
@@ -43,11 +22,8 @@ text {
   font-family: 'Josefin Sans', sans-serif;
 }
 
-text.yAxis {
-  font-size: 14px;
-  font-family: 'Josefin Sans', sans-serif;
-  fill: #060026;
-  z-index: 10;
+h3 {
+  text-align: center;
 }
 
 .label {
