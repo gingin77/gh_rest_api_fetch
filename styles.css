@@ -65,3 +65,17 @@ text.yAxis {
 .legend_label{
   font-size: 12px;
 }
+
+.axis_break path {
+  stroke: red;
+  stroke-width: 2;
+  fill: none;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: grey;
+  stroke-width: 2;
+  shape-rendering: crispEdges;
+}

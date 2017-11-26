@@ -100,12 +100,17 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     },
     yAxis = d3.axisLeft(yScale)
 
-  //  Two outlier data points: 76,444 for JS, Weekend_2_assignment and 165855 for github.io,
+   // Two outlier data points: 76,444 for JS, Weekend_2_assignment and 165855 for github.io,
   // If setting up a discontinuous range on the y-axis, use code snippet below
-  // let yScale = fc.scaleDiscontinuous(d3.scaleLinear())
-  //   .discontinuityProvider(fc.discontinuityRange([42000, 74000]))
-  //   .domain([0, 81000])
-  //   .range([height - 2, 0])
+  // let discRngStart = 42000,
+  //   discRngEnd = 74000,
+  //   axisBreakSpace = 10,
+  //   yScale = fc.scaleDiscontinuous(d3.scaleLinear())
+  //     .discontinuityProvider(fc.discontinuityRange([discRngStart, discRngEnd]))
+  //     .domain([0, 81000])
+  //     .range([axisBreakSpace + height - 2, 0]),
+  //   yValue = function (d) { return yScale(d.count) },
+  //   yAxis = d3.axisLeft(yScale)
 
   // Add the svg canvas
   let svg = d3.select('body')
@@ -137,6 +142,10 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     .attr('dy', '1em')
     .style('text-anchor', 'middle')
     .text('Number of Bytes Stored')
+
+    // .att('class', 'axis_break')
+    // .attr('y', (-1 * margin.right) + 10)
+    // .attr('x', 0 - (height / 2))
 
   // setup dot colors
   let cValue = function (d) { return d.language }
@@ -184,16 +193,16 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     })
 
   legend.append('rect')
-    .attr('x', width - 18)
+    .attr('x', margin.right + 4)
     .attr('width', 14)
     .attr('height', 14)
     .style('fill', lcolor)
 
   legend.append('text')
     .attr('class', 'legend_label')
-    .attr('x', width - 24)
+    .attr('x', margin.right + 22)
     .attr('y', 9)
     .attr('dy', '.35em')
-    .style('text-anchor', 'end')
+    .style('text-anchor', 'start')
     .text(function (d) { return d })
 })
