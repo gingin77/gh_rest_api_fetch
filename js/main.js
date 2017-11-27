@@ -20,9 +20,10 @@ d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', funct
     repoPrimryLang.push(dataObj[i].language)
     allLangUrls.push(dataObj[i].languages_url)
   }
+  console.log(repoPrimryLang)
   enrichUrls(arrayOfLangObjs)
 
-// Transform data for d3 to use
+// Transform data for d3 to use for bar graph
   let repoPrimLangCountObj = repoPrimryLang.reduce(function (allLangs, lang) {
     allLangs[lang] = allLangs[lang] ? allLangs[lang] + 1 : 1
     return allLangs
@@ -34,6 +35,7 @@ d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', funct
     b.count - a.count
   )
   let d3ArrayMinusNull = sortedArrayForD3.filter(language => language.language !== 'null')
+  console.log(d3ArrayMinusNull)
 
 // Use d3 to render vertical column graph
   var data = d3ArrayMinusNull
@@ -114,6 +116,8 @@ function enrichUrls (arrayOfLangObjs) {
     new Date(b.pushed_at) - new Date(a.pushed_at)
   )
   neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
+  console.log(neededlangByteUrls)
+  console.log(neededlangByteUrls.length)
   getAllLanguageBytes(neededlangByteUrls)
 }
 
@@ -202,4 +206,62 @@ function buildComprehensiveObj (array1, array2) {
     }
   }
   console.log(comprehensiveObjArr)
+}
+console.log(comprehensiveObjArr)
+
+let transformedArry = transformLangObj(comprehensiveObjArr)
+console.log(transformedArry)
+
+// Use language and count as keys, instead of 'language': 'count' key:value pairs
+function transformLangObj (myData) {
+  myData.map(function (obj) {
+    let lObj = obj.all_lang_bytes_for_repo
+    let nArr = []
+    Object.keys(lObj).forEach(key => {
+      let nKVP = {
+        language: key,
+        count: lObj[key]
+      }
+      nArr.push(nKVP)
+    })
+    obj.all_lang_bytes_for_repo = nArr
+  })
+  console.log(myData)
+  return myData
+}
+
+// Restructure array of objects. Instead of one object per repository, establish one object for every set of language byte counts for each reposity
+let langBytesFirst = makeBytesFirst(transformedArry)
+
+function makeBytesFirst (myData) {
+  let newDataObjsArr = []
+  myData.map(function (repObj) {
+    let bytObj = repObj.all_lang_bytes_for_repo
+    let newDataObj = {}
+    if (bytObj.length !== 0) {
+      bytObj.map(function (langByteObj) {
+        newDataObj = {
+          'language': langByteObj.language,
+          'count': langByteObj.count,
+          'repo_name': repObj.repo_name,
+          'pushed_at': repObj.pushed_at,
+          'primary_repo_lang': repObj.primary_repo_lang,
+          'url_for_all_repo_langs': repObj.url_for_all_repo_langs
+        }
+        newDataObjsArr.push(newDataObj)
+      })
+    } else {
+      newDataObj = {
+        'language': 'Null',
+        'count': 0,
+        'repo_name': repObj.repo_name,
+        'pushed_at': repObj.pushed_at,
+        'primary_repo_lang': 'na',
+        'url_for_all_repo_langs': repObj.url_for_all_repo_langs
+      }
+      newDataObjsArr.push(newDataObj)
+    }
+  })
+  console.log(newDataObjsArr)
+  return newDataObjsArr
 }
