@@ -11,7 +11,6 @@
  		<!-- Use maximum-scale and user-scalable at your own risk. It disables pinch/zoom. Think about usability/accessibility before including.-->
  		<meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
  		<!-- Place favicon.ico and apple-touch-icon.png in the root directory -->
- 		<link rel="stylesheet" type="text/css" href=" ">
     <script src="https://d3js.org/d3.v4.min.js"></script>
     <script src="https://d3js.org/d3-axis.v1.min.js"></script>
     <script src="https://d3js.org/d3-collection.v1.min.js"></script>
@@ -25,15 +24,19 @@
     <script src="https://d3js.org/d3-scale.v1.min.js"></script>
     <script src="https://d3js.org/d3-time.v1.min.js"></script>
     <script src="https://d3js.org/d3-time-format.v2.min.js"></script>
-    <script type="text/javascript" src="date.js"></script>
+    <script src="https://d3js.org/d3-hierarchy.v1.min.js"></script>
+    <script type="text/javascript" src="js/date.js"></script>
     <style>@import url('https://fonts.googleapis.com/css?family=Josefin+Sans');
     </style>
     <link rel="stylesheet" type="text/css" href="styles.css" />
  	</head>
  	<body>
-    <section style="font-family: 'Josefin Sans', sans-serif;">
+    <section>
       <h3>Programming Language Distributions for GitHub Project Repos</h3>
+      <div id="for_svg">
+
+      </div>
     </section>
-    <script type="text/javascript" src="scatter_plot.js"></script>
+    <script type="text/javascript" src="js/scatter_plot.js"></script>
  	</body>
  </html>
