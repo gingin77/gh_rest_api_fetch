@@ -68,8 +68,8 @@ function tallyLangByteCounts (langBytesAryofObjs) {
 
 
 // Transform data for d3 to use for column graph
-d3.json('static_data/repoPrimryLang_ary.txt', function (primL_ary) {
-  repoPrimryLang = primL_ary
+d3.json('static_data/repoPrimryLang_ary.txt', function (data) {
+  repoPrimryLang = data
   let repoPrimLangCountObj = repoPrimryLang.reduce(function (allLangs, lang) {
     allLangs[lang] = allLangs[lang] ? allLangs[lang] + 1 : 1
     return allLangs
@@ -84,13 +84,15 @@ d3.json('static_data/repoPrimryLang_ary.txt', function (primL_ary) {
 
 // Use d3 to render vertical column graph
   var data = d3ArrayMinusNull
+
+  let margin = {right: 10, left: 10}
   var barWidth = 50
   var width = (barWidth + 14) * data.length
   var height = 380
 
   var x = d3.scaleLinear()
     .domain([0, data.length])
-    .range([0, width])
+    .range([margin.right, width])
 
   var y = d3.scaleLinear()
     .domain([0, d3.max(data, function (datum) {
@@ -99,7 +101,7 @@ d3.json('static_data/repoPrimryLang_ary.txt', function (primL_ary) {
     .rangeRound([0, height])
 
 // add the canvas to the DOM
-  var languageBars = d3.select('#lang_freq')
+  var languageBars = d3.select('#graphicOne')
     .append('svg:svg')
     .attr('width', width)
     .attr('height', height * 1.1)
@@ -125,6 +127,7 @@ d3.json('static_data/repoPrimryLang_ary.txt', function (primL_ary) {
     .data(data)
     .enter()
     .append('svg:text')
+    .attr('class', 'barLabels')
     .attr('x', function (datum, index) {
       return x(index) + barWidth
     })

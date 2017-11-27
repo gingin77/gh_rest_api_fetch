@@ -14,10 +14,6 @@ svg {
   padding: 20px;
 }
 
-rect {
-  fill: #060026;
-}
-
 text {
   fill: black;
   font-family: 'Josefin Sans', sans-serif;
@@ -46,4 +42,43 @@ h3 {
 
 .legend_label {
   font-size: 12px;
+}
+
+/*#wrapper{
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+
+}*/
+
+#graphicOne, #graphicTwo{
+  display: flex;
+  flex-direction: column;
+  max-height: 600px;
+  text-align: center;
+}
+
+/*#graphicTwo{
+  margin-left: 80px;
+}*/
+
+/*#byte_freq{
+  padding: 0 19px 0 0;
+  margin-left: -12px;
+}*/
+
+rect {
+  fill: #060026;
+}
+
+.barLabels {
+  fill: white;
+  font-family: 'Josefin Sans', sans-serif;
+}
+
+text.yAxis {
+  font-size: 14px;
+  font-family: 'Josefin Sans', sans-serif;
+  fill: #060026;
+  z-index: 10;
 }

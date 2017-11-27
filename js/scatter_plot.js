@@ -1,16 +1,16 @@
 // let inPageData =
-
 d3.json('static_data/compObj_46_repos.json', function (data) {
   console.log(data)
+
   function strToDtSingle (d) {
     return new Date(d)
   }
-
   let myData = data
   // let myData = inPageData
-  console.log(myData)
+
   transformLangObj(myData)
 
+  // Use language and count as keys, instead of 'language': 'count' key:value pairs
   function transformLangObj (myData) {
     myData.map(function (obj) {
       let lObj = obj.all_lang_bytes_for_repo
@@ -26,8 +26,8 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     })
   }
 
+  // Restructure array of objects. Instead of one object per repository, establish one object for every set of language byte counts for each reposity
   let langBytesFirst = makeBytesFirst(myData)
-
   function makeBytesFirst (myData) {
     let newDataObjsArr = []
     myData.map(function (repObj) {
@@ -60,6 +60,7 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     return newDataObjsArr
   }
 
+  // Sort dates and assign variables to use for the x-axis range (ie., max and min values based on the earliest and latest commit dates)
   let sortbyDate = d3.nest()
     .key(function (d) {
       return d.pushed_at
@@ -72,6 +73,7 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     xMax = new Date(maxDate).addWeeks(1),
     xMin = new Date(minDate).addWeeks(-1)
 
+  // Setup margin, height and width to define svg area
   let margin = {
       top: 10,
       right: 80,
@@ -81,17 +83,17 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     width = 740 - margin.left,
     height = 500 - margin.top - margin.bottom
 
-  // setup x
+  // Setup x values (scale; values displayed, and axis attributes)
   let xScale = d3.scaleTime().domain([xMin, xMax]).range([margin.right, width - margin.left]),
     xValue = function (d) { return xScale(strToDtSingle(d.pushed_at)) },
     xAxis = d3.axisBottom(xScale).ticks(d3.timeWeek.every(2)).tickFormat(d3.timeFormat('%b %e'))
 
-  // setup y
+  // Setup y values (scale; values displayed, and axis attributes)
   let yScale = d3.scaleLinear().domain([0, 82000]).range([height - 2, 0]),
     yValue = function (d) { return yScale(d.count) },
     yAxis = d3.axisLeft(yScale)
 
-  // Add the svg canvas
+  // Add the svg canvas to DOM
   let svg = d3.select('#for_svg')
     .append('svg')
     .attr('width', width + margin.left)
@@ -122,18 +124,18 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
     .style('text-anchor', 'middle')
     .text('Number of Bytes Stored')
 
-  // setup dot colors
+  // Setup dot colors
   let blue = '#457DB7',
-    rubyred = '#991B67', /* '#B71808',  */
+    rubyred = '#991B67',
     purple = '#A99CCD',
-    peach = '#E6AC93',  /*  '#CA602E', */
+    peach = '#E6AC93',
     grey = '#8F8F90',
     cValue = function (d) { return d.language },
     color = d3.scaleOrdinal()
       .domain(['JavaScript', 'Ruby', 'CSS', 'HTML', 'CoffeeScript', 'Shell', 'Null'])
       .range([blue, rubyred, purple, peach, grey, grey, grey])
 
-  // draw dots
+  // Draw dots
   svg.selectAll('dot')
     .data(langBytesFirst)
     .enter().append('circle')
@@ -155,15 +157,17 @@ d3.json('static_data/compObj_46_repos.json', function (data) {
         .style('opacity', 0)
     })
 
-  // add the tooltip area to the webpage
+  // Add the tooltip area to the webpage
   let tooltip = d3.select('body').append('div')
     .attr('class', 'tooltip')
     .style('opacity', 0)
 
+  // Set up alternative text to use for legend
   let lcolor = d3.scaleOrdinal()
     .domain(['JS', 'Ruby', 'CSS', 'HTML', 'Misc'])
     .range([blue, rubyred, purple, peach, grey])
 
+  // Set up legend
   let legend = svg.selectAll('.legend')
     .data(lcolor.domain())
     .enter().append('g')
