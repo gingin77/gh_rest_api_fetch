@@ -1,53 +1,31 @@
-let arrayOfLangObjs = []
 let repoPrimryLang = []
-let neededlangByteUrls = []
-let langBytesAryofObjs = []
-let langsTotal = []
+let arrayOfLangObjs = []
 let existingArray = []
 
-// d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (ghdata) {
-  // console.log(ghdata)
-  // let dataObj = ghdata
-  // for (let i = 0; i < dataObj.length; i++) {
-  //   let langObj = {}
-  //   langObj.repo_name = dataObj[i].name
-  //   langObj.primary_repo_lang = dataObj[i].language
-  //   langObj.url_for_all_repo_langs = dataObj[i].languages_url
-  //   langObj.created_at = dataObj[i].created_at
-  //   langObj.pushed_at = dataObj[i].pushed_at
-  //
-  //   arrayOfLangObjs.push(langObj)
-  //
-  //   repoPrimryLang.push(dataObj[i].language)
-  // }
-  // console.log(arrayOfLangObjs)
-  // evalIfArrysNotNull(arrayOfLangObjs, existingArray)
-
 d3.json('static_data/langBytesFirst.json', function (data) {
+  console.log(data)
   existingArray = data
   evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
-d3.json('static_data/arrayOfLangObjs.json', function (dataObj) {
+d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (dataObj) {
   for (let i = 0; i < dataObj.length; i++) {
     let langObj = {}
-    langObj.repo_name = dataObj[i].repo_name
-    langObj.primary_repo_lang = dataObj[i].primary_repo_lang
-    langObj.url_for_all_repo_langs = dataObj[i].url_for_all_repo_langs
+    langObj.repo_name = dataObj[i].name
+    langObj.primary_repo_lang = dataObj[i].language
+    langObj.url_for_all_repo_langs = dataObj[i].languages_url
     langObj.created_at = dataObj[i].created_at
     langObj.pushed_at = dataObj[i].pushed_at
 
     arrayOfLangObjs.push(langObj)
 
-    repoPrimryLang.push(dataObj[i].primary_repo_lang)
+    repoPrimryLang.push(dataObj[i].language)
   }
+  console.log(arrayOfLangObjs)
   evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
 function evalIfArrysNotNull () {
-  console.log('evalIfArrysNotNull was called')
-  console.log(arrayOfLangObjs.length)
-  console.log(existingArray.length)
   if (arrayOfLangObjs.length !== 0 && existingArray.length !== 0) {
     findNewRepos(arrayOfLangObjs, existingArray)
     findUpdatedRepos(arrayOfLangObjs, existingArray)
@@ -57,9 +35,11 @@ function evalIfArrysNotNull () {
 let newRepoUrlsToFetch = []
 let existingObjsToKeep = []
 let updatedUrlsToFetch = []
-let combinedArr = []
+
 let findNewReposComplete = false
 let getURLsUpdtdReposComplete = false
+
+let combinedArr = []
 
 function findNewRepos (newArray, existingArray) {
   console.log('findNewRepos was called')
@@ -132,6 +112,8 @@ function splitArryToURLs (array) {
      getLanguageBytes(url)
    }
  }
+
+let langBytesAryofObjs = []
 
 function getLanguageBytes (url) {
   console.log('getLanguageBytes was called')
