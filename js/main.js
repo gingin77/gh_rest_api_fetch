@@ -25,7 +25,6 @@ let existingArray = []
 
 d3.json('static_data/langBytesFirst.json', function (data) {
   existingArray = data
-  console.log(existingArray)
   evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
@@ -42,7 +41,6 @@ d3.json('static_data/arrayOfLangObjs.json', function (dataObj) {
 
     repoPrimryLang.push(dataObj[i].primary_repo_lang)
   }
-  console.log(arrayOfLangObjs)
   evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
@@ -59,6 +57,8 @@ function evalIfArrysNotNull () {
 let newRepoUrlsToFetch = []
 let existingObjsToKeep = []
 let updatedUrlsToFetch = []
+let findNewReposComplete = false
+let getURLsUpdtdReposComplete = false
 
 function findNewRepos (newArray, existingArray) {
   console.log('findNewRepos was called')
@@ -70,7 +70,9 @@ function findNewRepos (newArray, existingArray) {
     }
   })
   newRepoUrlsToFetch = unMatchedObjs.map((obj) => obj.url_for_all_repo_langs)
-  console.log(newRepoUrlsToFetch)
+  console.log(newRepoUrlsToFetch.length)
+  findNewReposComplete = true
+  compileURLsToFetch(newRepoUrlsToFetch, updatedUrlsToFetch)
 }
 
 function findUpdatedRepos (newArray, existingArray) {
@@ -83,61 +85,65 @@ function findUpdatedRepos (newArray, existingArray) {
       }
     })
   })
-  console.log(matchedObjs)
+  existingObjsToKeep = matchedObjs
+  console.log(existingObjsToKeep)
+  getURLsUpdtdRepos(matchedObjs)
+}
+
+function getURLsUpdtdRepos (arr) {
   let updatedObjsToFetch = []
   existingArray.forEach(function (existObj) {
-    if (matchedObjs.indexOf(existObj) === -1) {
+    if (arr.indexOf(existObj) === -1) {
       updatedObjsToFetch.push(existObj)
     }
   })
-  console.log(updatedObjsToFetch)
   let UpdtdUrls = updatedObjsToFetch.map((obj) => obj.url_for_all_repo_langs)
   updatedUrlsToFetch = elimateDuplicates(UpdtdUrls)
   console.log(updatedUrlsToFetch)
-  // console.log(existingObjsToKeep)
+  getURLsUpdtdReposComplete = true
+  compileURLsToFetch(newRepoUrlsToFetch, updatedUrlsToFetch)
 }
 
-function elimateDuplicates(arr) {
+function elimateDuplicates (arr) {
   let outPut = []
   let obj = {}
-  arr.forEach((i) => obj[i] = 0 )
+  arr.forEach(i => obj[i] = 0)
   for (item in obj) { outPut.push(item) }
   return outPut
 }
 
-// function enrichUrls (arrayOfLangObjs) {
-//   let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
-//     new Date(b.pushed_at) - new Date(a.pushed_at)
-//   ).slice(0, 3)
-//   neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
-//   getAllLanguageBytes(neededlangByteUrls)
-// }
+function compileURLsToFetch (newRepoUrlsToFetch, updatedUrlsToFetch) {
+  console.log('compileURLsToFetch was called')
+  console.log(findNewReposComplete)
+  console.log(getURLsUpdtdReposComplete)
 
-function getAllLanguageBytes (array) {
-  for (let i = 0; i < array.length; i++) {
-    getLanguageBytes(array[i])
+  if (findNewReposComplete === true && getURLsUpdtdReposComplete === true) {
+    let combinedArr = newRepoUrlsToFetch.concat(updatedUrlsToFetch)
+    console.log(combinedArr)
+    getLanguageBytes(combinedArr)
   }
 }
 
 function getLanguageBytes (url) {
-  fetch(url)
-    .then(function (response) {
-      if (response.status !== 200) {
-        console.log(response.status)
-        return
-      }
-      response.json().then(function (data) {
-        let repoInfo = {}
-        repoInfo.url_for_all_repo_langs = url
-        repoInfo.all_lang_bytes_for_repo = data
-        langBytesAryofObjs.push(repoInfo)
-
-        evalLangBytArrStatus(langBytesAryofObjs)
-      })
-    })
-    .catch(function (err) {
-      console.log('Fetch Error :-S', err)
-    })
+  console.log('getLanguageBytes was called');
+  // fetch(url)
+  //   .then(function (response) {
+  //     if (response.status !== 200) {
+  //       console.log(response.status)
+  //       return
+  //     }
+  //     response.json().then(function (data) {
+  //       let repoInfo = {}
+  //       repoInfo.url_for_all_repo_langs = url
+  //       repoInfo.all_lang_bytes_for_repo = data
+  //       langBytesAryofObjs.push(repoInfo)
+  //
+  //       evalLangBytArrStatus(langBytesAryofObjs)
+  //     })
+  //   })
+  //   .catch(function (err) {
+  //     console.log('Fetch Error :-S', err)
+  //   })
 }
 
 function evalLangBytArrStatus () {
