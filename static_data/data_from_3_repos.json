@@ -1,0 +1,66 @@
+[
+  {
+    "language": "HTML",
+    "count": 5346,
+    "repo_name": "gh_language_graph",
+    "pushed_at": "2017-11-27T03:21:59.000Z",
+    "primary_repo_lang": "HTML",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
+  },
+  {
+    "language": "Ruby",
+    "count": 3734,
+    "repo_name": "gh_language_graph",
+    "pushed_at": "2017-11-27T03:21:59.000Z",
+    "primary_repo_lang": "HTML",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 62825,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-27T15:47:15.000Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 2131,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-27T15:47:15.000Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 1121,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-27T15:47:15.000Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 166979,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-11-27T15:48:02.000Z",
+    "primary_repo_lang": "CSS",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 45668,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-11-27T15:48:02.000Z",
+    "primary_repo_lang": "CSS",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 13299,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-11-27T15:48:02.000Z",
+    "primary_repo_lang": "CSS",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  }
+]

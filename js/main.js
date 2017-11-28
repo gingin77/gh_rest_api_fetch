@@ -3,33 +3,115 @@ let repoPrimryLang = []
 let neededlangByteUrls = []
 let langBytesAryofObjs = []
 let langsTotal = []
+let existingArray = []
 
-d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (ghdata) {
-  let dataObj = ghdata
+// d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (ghdata) {
+  // console.log(ghdata)
+  // let dataObj = ghdata
+  // for (let i = 0; i < dataObj.length; i++) {
+  //   let langObj = {}
+  //   langObj.repo_name = dataObj[i].name
+  //   langObj.primary_repo_lang = dataObj[i].language
+  //   langObj.url_for_all_repo_langs = dataObj[i].languages_url
+  //   langObj.created_at = dataObj[i].created_at
+  //   langObj.pushed_at = dataObj[i].pushed_at
+  //
+  //   arrayOfLangObjs.push(langObj)
+  //
+  //   repoPrimryLang.push(dataObj[i].language)
+  // }
+  // console.log(arrayOfLangObjs)
+  // evalIfArrysNotNull(arrayOfLangObjs, existingArray)
+
+d3.json('static_data/langBytesFirst.json', function (data) {
+  existingArray = data
+  console.log(existingArray)
+  evalIfArrysNotNull(arrayOfLangObjs, existingArray)
+})
+
+d3.json('static_data/arrayOfLangObjs.json', function (dataObj) {
   for (let i = 0; i < dataObj.length; i++) {
     let langObj = {}
-    langObj.repo_name = dataObj[i].name
-    langObj.primary_repo_lang = dataObj[i].language
-    langObj.url_for_all_repo_langs = dataObj[i].languages_url
+    langObj.repo_name = dataObj[i].repo_name
+    langObj.primary_repo_lang = dataObj[i].primary_repo_lang
+    langObj.url_for_all_repo_langs = dataObj[i].url_for_all_repo_langs
     langObj.created_at = dataObj[i].created_at
     langObj.pushed_at = dataObj[i].pushed_at
 
     arrayOfLangObjs.push(langObj)
 
-    repoPrimryLang.push(dataObj[i].language)
+    repoPrimryLang.push(dataObj[i].primary_repo_lang)
   }
   console.log(arrayOfLangObjs)
-  console.log(repoPrimryLang)
-  enrichUrls(arrayOfLangObjs)
+  evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
-function enrichUrls (arrayOfLangObjs) {
-  let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
-    new Date(b.pushed_at) - new Date(a.pushed_at)
-  ).slice(0, 3)
-  neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
-  getAllLanguageBytes(neededlangByteUrls)
+function evalIfArrysNotNull () {
+  console.log('evalIfArrysNotNull was called')
+  console.log(arrayOfLangObjs.length)
+  console.log(existingArray.length)
+  if (arrayOfLangObjs.length !== 0 && existingArray.length !== 0) {
+    findNewRepos(arrayOfLangObjs, existingArray)
+    findUpdatedRepos(arrayOfLangObjs, existingArray)
+  }
 }
+
+let newRepoUrlsToFetch = []
+let existingObjsToKeep = []
+let updatedUrlsToFetch = []
+
+function findNewRepos (newArray, existingArray) {
+  console.log('findNewRepos was called')
+  let unMatchedObjs = []
+  let existingRepos = existingArray.map(obj => obj.repo_name)
+  newArray.forEach(function (obj) {
+    if (existingRepos.indexOf(obj.repo_name) === -1) {
+      unMatchedObjs.push(obj)
+    }
+  })
+  newRepoUrlsToFetch = unMatchedObjs.map((obj) => obj.url_for_all_repo_langs)
+  console.log(newRepoUrlsToFetch)
+}
+
+function findUpdatedRepos (newArray, existingArray) {
+  console.log('findUpdatedRepos was called')
+  let matchedObjs = []
+  existingArray.forEach(function (existObj) {
+    newArray.filter(function (newArObj) {
+      if ((new Date(existObj.pushed_at).toString()) === (new Date(newArObj.pushed_at).toString())) {
+        matchedObjs.push(existObj)
+      }
+    })
+  })
+  console.log(matchedObjs)
+  let updatedObjsToFetch = []
+  existingArray.forEach(function (existObj) {
+    if (matchedObjs.indexOf(existObj) === -1) {
+      updatedObjsToFetch.push(existObj)
+    }
+  })
+  console.log(updatedObjsToFetch)
+  let UpdtdUrls = updatedObjsToFetch.map((obj) => obj.url_for_all_repo_langs)
+  updatedUrlsToFetch = elimateDuplicates(UpdtdUrls)
+  console.log(updatedUrlsToFetch)
+  // console.log(existingObjsToKeep)
+}
+
+function elimateDuplicates(arr) {
+  let outPut = []
+  let obj = {}
+  arr.forEach((i) => obj[i] = 0 )
+  for (item in obj) { outPut.push(item) }
+  return outPut
+}
+
+// function enrichUrls (arrayOfLangObjs) {
+//   let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
+//     new Date(b.pushed_at) - new Date(a.pushed_at)
+//   ).slice(0, 3)
+//   neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
+//   getAllLanguageBytes(neededlangByteUrls)
+// }
 
 function getAllLanguageBytes (array) {
   for (let i = 0; i < array.length; i++) {
@@ -170,4 +252,4 @@ function strToDtSingle (ArrayOfObjects) {
    obj.pushed_at = new Date(obj.pushed_at)
  })
 }
-console.log(newDataObjsArr)
+// console.log(newDataObjsArr)
