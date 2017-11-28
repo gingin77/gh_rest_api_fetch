@@ -1,72 +1,83 @@
-// let inPageData =
-d3.json('static_data/compObj_46_11_27.json', function (data) {
-  console.log(data)
+let inPageData = [
+  {
+    "language": "HTML",
+    "count": 5346,
+    "repo_name": "gh_language_graph",
+    "pushed_at": "2017-11-27T03:21:59.000Z",
+    "primary_repo_lang": "HTML",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
+  },
+  {
+    "language": "Ruby",
+    "count": 3734,
+    "repo_name": "gh_language_graph",
+    "pushed_at": "2017-11-27T03:21:59.000Z",
+    "primary_repo_lang": "HTML",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 62825,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-27T15:47:15.000Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 2131,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-27T15:47:15.000Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 1121,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-27T15:47:15.000Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 166979,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-11-27T15:48:02.000Z",
+    "primary_repo_lang": "CSS",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 45668,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-11-27T15:48:02.000Z",
+    "primary_repo_lang": "CSS",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 13299,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-11-27T15:48:02.000Z",
+    "primary_repo_lang": "CSS",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  }
+]
 
+d3.json('static_data/compObj_46_11_27.json', function (data) {
   function strToDtSingle (d) {
     return new Date(d)
   }
-  let myData = data
-  // let myData = inPageData
+  let myData = inPageData
+  console.log(myData)
 
-  transformLangObj(myData)
-
-  // Use language and count as keys, instead of 'language': 'count' key:value pairs
-  function transformLangObj (myData) {
-    myData.map(function (obj) {
-      let lObj = obj.all_lang_bytes_for_repo
-      let nArr = []
-      Object.keys(lObj).forEach(key => {
-        let nKVP = {
-          language: key,
-          count: lObj[key]
-        }
-        nArr.push(nKVP)
-      })
-      obj.all_lang_bytes_for_repo = nArr
-    })
-  }
-
-  // Restructure array of objects. Instead of one object per repository, establish one object for every set of language byte counts for each reposity
-  let langBytesFirst = makeBytesFirst(myData)
-  function makeBytesFirst (myData) {
-    let newDataObjsArr = []
-    myData.map(function (repObj) {
-      let bytObj = repObj.all_lang_bytes_for_repo
-      let newDataObj = {}
-      if (bytObj.length !== 0) {
-        bytObj.map(function (langByteObj) {
-          newDataObj = {
-            'language': langByteObj.language,
-            'count': langByteObj.count,
-            'repo_name': repObj.repo_name,
-            'pushed_at': repObj.pushed_at,
-            'primary_repo_lang': repObj.primary_repo_lang,
-            'url_for_all_repo_langs': repObj.url_for_all_repo_langs
-          }
-          newDataObjsArr.push(newDataObj)
-        })
-      } else {
-        newDataObj = {
-          'language': 'Null',
-          'count': 0,
-          'repo_name': repObj.repo_name,
-          'pushed_at': repObj.pushed_at,
-          'primary_repo_lang': 'na',
-          'url_for_all_repo_langs': repObj.url_for_all_repo_langs
-        }
-        newDataObjsArr.push(newDataObj)
-      }
-    })
-    return newDataObjsArr
-  }
-
-  // Sort dates and assign variables to use for the x-axis range (ie., max and min values based on the earliest and latest commit dates)
   let sortbyDate = d3.nest()
     .key(function (d) {
       return d.pushed_at
     })
     .sortKeys(d3.ascending)
-    .entries(langBytesFirst)
+    .entries(myData)
 
   let minDate = new Date(sortbyDate[0].key),
     maxDate = new Date(sortbyDate[sortbyDate.length - 1].key),
@@ -137,7 +148,7 @@ d3.json('static_data/compObj_46_11_27.json', function (data) {
 
   // Draw dots
   svg.selectAll('dot')
-    .data(langBytesFirst)
+    .data(myData)
     .enter().append('circle')
     .attr('r', 3.5)
     .attr('cx', xValue)

@@ -1,6 +1,5 @@
 let arrayOfLangObjs = []
 let repoPrimryLang = []
-let allLangUrls = []
 let neededlangByteUrls = []
 let langBytesAryofObjs = []
 let langsTotal = []
@@ -18,118 +17,27 @@ d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', funct
     arrayOfLangObjs.push(langObj)
 
     repoPrimryLang.push(dataObj[i].language)
-    allLangUrls.push(dataObj[i].languages_url)
   }
+  console.log(arrayOfLangObjs)
   console.log(repoPrimryLang)
   enrichUrls(arrayOfLangObjs)
-
-// Transform data for d3 to use for bar graph
-  let repoPrimLangCountObj = repoPrimryLang.reduce(function (allLangs, lang) {
-    allLangs[lang] = allLangs[lang] ? allLangs[lang] + 1 : 1
-    return allLangs
-  }, {})
-  let arrayForD3 = Object.keys(repoPrimLangCountObj).map(function (k) {
-    return {language: k, count: repoPrimLangCountObj[k]}
-  })
-  let sortedArrayForD3 = arrayForD3.slice().sort((a, b) =>
-    b.count - a.count
-  )
-  let d3ArrayMinusNull = sortedArrayForD3.filter(language => language.language !== 'null')
-  console.log(d3ArrayMinusNull)
-
-// Use d3 to render vertical column graph
-  var data = d3ArrayMinusNull
-  var barWidth = 50
-  var width = (barWidth + 14) * data.length
-  var height = 380
-
-  var x = d3.scaleLinear()
-    .domain([0, data.length])
-    .range([0, width])
-
-  var y = d3.scaleLinear()
-    .domain([0, d3.max(data, function (datum) {
-      return datum.count
-    })])
-    .rangeRound([0, height])
-
-// add the canvas to the DOM
-  var languageBars = d3.select('#lang_freq')
-    .append('svg:svg')
-    .attr('width', width)
-    .attr('height', height * 1.1)
-
-// set bar heights based on data
-  languageBars.selectAll('rect')
-    .data(data)
-    .enter()
-    .append('svg:rect')
-    .attr('x', function (datum, index) {
-      return x(index)
-    })
-    .attr('y', function (datum) {
-      return height - y(datum.count)
-    })
-    .attr('height', function (datum) {
-      return y(datum.count)
-    })
-    .attr('width', barWidth)
-
-// Add labels to bars
-  languageBars.selectAll('text')
-    .data(data)
-    .enter()
-    .append('svg:text')
-    .attr('x', function (datum, index) {
-      return x(index) + barWidth
-    })
-    .attr('y', function (datum) {
-      return height - y(datum.count)
-    })
-    .attr('dx', -barWidth / 2)
-    .attr('dy', '1.2em')
-    .attr('text-anchor', 'middle')
-    .text(function (datum) {
-      return datum.count
-    })
-
-// Add labels to x-axis
-  languageBars.selectAll('text.yAxis')
-    .data(data)
-    .enter().append('svg:text')
-    .attr('x', function (datum, index) {
-      return x(index) + barWidth
-    })
-    .attr('y', height)
-    .attr('dx', -barWidth / 2)
-    .attr('text-anchor', 'middle')
-    .text(function (datum) {
-      return datum.language
-    })
-    .attr('transform', 'translate(0, 18)')
-    .attr('class', 'yAxis')
 })
 
 function enrichUrls (arrayOfLangObjs) {
-  console.log('enrichUrls was called')
   let thirtyMoRcntPshdRepos = arrayOfLangObjs.slice().sort((a, b) =>
     new Date(b.pushed_at) - new Date(a.pushed_at)
-  )
+  ).slice(0, 3)
   neededlangByteUrls = thirtyMoRcntPshdRepos.map((obj) => obj.url_for_all_repo_langs)
-  console.log(neededlangByteUrls)
-  console.log(neededlangByteUrls.length)
   getAllLanguageBytes(neededlangByteUrls)
 }
 
 function getAllLanguageBytes (array) {
-  console.log('getAllLanguageBytes was called')
   for (let i = 0; i < array.length; i++) {
     getLanguageBytes(array[i])
   }
 }
 
 function getLanguageBytes (url) {
-  console.log('getLanguageBytes was called')
   fetch(url)
     .then(function (response) {
       if (response.status !== 200) {
@@ -158,7 +66,6 @@ function evalLangBytArrStatus () {
 }
 
 function tallyLangByteCounts (langBytesAryofObjs) {
-  console.log('tallyLangByteCounts was called')
   for (let i = 0; i < langBytesAryofObjs.length; i++) {
     let langArray = Object.getOwnPropertyNames(langBytesAryofObjs[i].all_lang_bytes_for_repo)
     let statsArray = Object.values(langBytesAryofObjs[i].all_lang_bytes_for_repo)
@@ -181,13 +88,13 @@ function tallyLangByteCounts (langBytesAryofObjs) {
         }
       }
     }
-  } console.log(langsTotal)
+  }
+  console.log(langsTotal)
 }
 
 let comprehensiveObjArr = []
 
 function buildComprehensiveObj (array1, array2) {
-  console.log('buildComprehensiveObj was called')
   let comprehensiveObj = {}
   for (let i = 0; i < array1.length; i++) {
     let compare = array1[i].url_for_all_repo_langs
@@ -205,14 +112,10 @@ function buildComprehensiveObj (array1, array2) {
       }
     }
   }
-  console.log(comprehensiveObjArr)
+  transformLangObj(comprehensiveObjArr)
 }
-console.log(comprehensiveObjArr)
 
-let transformedArry = transformLangObj(comprehensiveObjArr)
-console.log(transformedArry)
-
-// Use language and count as keys, instead of 'language': 'count' key:value pairs
+// Use language and count as keys, instead of " 'language': 'count' " as the key:value pairs
 function transformLangObj (myData) {
   myData.map(function (obj) {
     let lObj = obj.all_lang_bytes_for_repo
@@ -226,15 +129,12 @@ function transformLangObj (myData) {
     })
     obj.all_lang_bytes_for_repo = nArr
   })
-  console.log(myData)
-  return myData
+  makeBytesFirst(comprehensiveObjArr)
 }
 
 // Restructure array of objects. Instead of one object per repository, establish one object for every set of language byte counts for each reposity
-let langBytesFirst = makeBytesFirst(transformedArry)
-
+let newDataObjsArr = []
 function makeBytesFirst (myData) {
-  let newDataObjsArr = []
   myData.map(function (repObj) {
     let bytObj = repObj.all_lang_bytes_for_repo
     let newDataObj = {}
@@ -262,6 +162,12 @@ function makeBytesFirst (myData) {
       newDataObjsArr.push(newDataObj)
     }
   })
-  console.log(newDataObjsArr)
-  return newDataObjsArr
+  strToDtSingle(newDataObjsArr)
 }
+
+function strToDtSingle (ArrayOfObjects) {
+  ArrayOfObjects.map(function (obj) {
+   obj.pushed_at = new Date(obj.pushed_at)
+ })
+}
+console.log(newDataObjsArr)
