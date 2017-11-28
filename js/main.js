@@ -57,6 +57,7 @@ function evalIfArrysNotNull () {
 let newRepoUrlsToFetch = []
 let existingObjsToKeep = []
 let updatedUrlsToFetch = []
+let combinedArr = []
 let findNewReposComplete = false
 let getURLsUpdtdReposComplete = false
 
@@ -118,66 +119,48 @@ function compileURLsToFetch (newRepoUrlsToFetch, updatedUrlsToFetch) {
   console.log(getURLsUpdtdReposComplete)
 
   if (findNewReposComplete === true && getURLsUpdtdReposComplete === true) {
-    let combinedArr = newRepoUrlsToFetch.concat(updatedUrlsToFetch)
+    combinedArr = newRepoUrlsToFetch.concat(updatedUrlsToFetch)
     console.log(combinedArr)
-    getLanguageBytes(combinedArr)
+    splitArryToURLs(combinedArr)
   }
 }
 
+function splitArryToURLs (array) {
+   for (let i = 0; i < array.length; i++) {
+     let url = array[i]
+     console.log(url)
+     getLanguageBytes(url)
+   }
+ }
+
 function getLanguageBytes (url) {
-  console.log('getLanguageBytes was called');
-  // fetch(url)
-  //   .then(function (response) {
-  //     if (response.status !== 200) {
-  //       console.log(response.status)
-  //       return
-  //     }
-  //     response.json().then(function (data) {
-  //       let repoInfo = {}
-  //       repoInfo.url_for_all_repo_langs = url
-  //       repoInfo.all_lang_bytes_for_repo = data
-  //       langBytesAryofObjs.push(repoInfo)
-  //
-  //       evalLangBytArrStatus(langBytesAryofObjs)
-  //     })
-  //   })
-  //   .catch(function (err) {
-  //     console.log('Fetch Error :-S', err)
-  //   })
+  console.log('getLanguageBytes was called')
+  fetch(url)
+    .then(function (response) {
+      if (response.status !== 200) {
+        console.log(response.status)
+        return
+      }
+      response.json().then(function (data) {
+        let repoInfo = {}
+        repoInfo.url_for_all_repo_langs = url
+        repoInfo.all_lang_bytes_for_repo = data
+        langBytesAryofObjs.push(repoInfo)
+
+        evalLangBytArrStatus(langBytesAryofObjs)
+      })
+    })
+    .catch(function (err) {
+      console.log('Fetch Error :-S', err)
+    })
 }
 
 function evalLangBytArrStatus () {
-  if (langBytesAryofObjs.length === neededlangByteUrls.length) {
-    tallyLangByteCounts(langBytesAryofObjs)
+  console.log(langBytesAryofObjs.length)
+  if (langBytesAryofObjs.length === combinedArr.length) {
+    // tallyLangByteCounts(langBytesAryofObjs)
     buildComprehensiveObj(arrayOfLangObjs, langBytesAryofObjs)
   }
-}
-
-function tallyLangByteCounts (langBytesAryofObjs) {
-  for (let i = 0; i < langBytesAryofObjs.length; i++) {
-    let langArray = Object.getOwnPropertyNames(langBytesAryofObjs[i].all_lang_bytes_for_repo)
-    let statsArray = Object.values(langBytesAryofObjs[i].all_lang_bytes_for_repo)
-    let listedInLangsTotal = langsTotal.map(function (obj) {
-      return obj.language
-    })
-    for (let q = 0; q < langArray.length; q++) {
-      let langObj = {}
-      langObj.language = langArray[q]
-      langObj.count = statsArray[q]
-
-      if (langsTotal.length === 0) {
-        langsTotal.push(langObj)
-      } else {
-        if (listedInLangsTotal.includes(langArray[q]) === true) {
-          let indexPos = listedInLangsTotal.indexOf(langArray[q])
-          langsTotal[indexPos].count = langsTotal[indexPos].count + statsArray[q]
-        } else {
-          langsTotal.push(langObj)
-        }
-      }
-    }
-  }
-  console.log(langsTotal)
 }
 
 let comprehensiveObjArr = []
@@ -250,12 +233,12 @@ function makeBytesFirst (myData) {
       newDataObjsArr.push(newDataObj)
     }
   })
-  strToDtSingle(newDataObjsArr)
+  combineNewWithExistingObjs(newDataObjsArr, existingObjsToKeep)
+  // strToDtSingle(newDataObjsArr)
 }
 
-function strToDtSingle (ArrayOfObjects) {
-  ArrayOfObjects.map(function (obj) {
-   obj.pushed_at = new Date(obj.pushed_at)
- })
+function combineNewWithExistingObjs (newDataObjsArr, existingObjsToKeep) {
+  let updatedCompObj = existingObjsToKeep.concat(newDataObjsArr)
+  console.log(updatedCompObj)
+  console.log(updatedCompObj.length)
 }
-// console.log(newDataObjsArr)
