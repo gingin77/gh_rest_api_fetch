@@ -2,13 +2,20 @@ let repoPrimryLang = []
 let arrayOfLangObjs = []
 let existingArray = []
 
-d3.json('static_data/langBytesFirst.json', function (data) {
-  console.log(data)
+// Call function to draw scatter plot using static data
+drawScatterPlot()
+
+// Retrieve data and initiate comparison with data requested from external API
+d3.json('static_data/langBytesFirst.json', function (error, data) {
+  if (error) return console.warn(error)
   existingArray = data
   evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
-d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (dataObj) {
+// Request data from single endpoint in GitHub API, arrange data into object and compare new data objects with existing data objects
+d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', function (error, dataObj) {
+  if (error) return console.warn(error)
+
   for (let i = 0; i < dataObj.length; i++) {
     let langObj = {}
     langObj.repo_name = dataObj[i].name
@@ -21,10 +28,10 @@ d3.json('https://api.github.com/users/gingin77/repos?per_page=100&page=1', funct
 
     repoPrimryLang.push(dataObj[i].language)
   }
-  console.log(arrayOfLangObjs)
   evalIfArrysNotNull(arrayOfLangObjs, existingArray)
 })
 
+// Function evaluates whether both arrays have contents
 function evalIfArrysNotNull () {
   if (arrayOfLangObjs.length !== 0 && existingArray.length !== 0) {
     findNewRepos(arrayOfLangObjs, existingArray)
@@ -34,15 +41,15 @@ function evalIfArrysNotNull () {
 
 let newRepoUrlsToFetch = []
 let existingObjsToKeep = []
-let updatedUrlsToFetch = []
+let updatedRepoUrlsToFetch = []
 
 let findNewReposComplete = false
-let getURLsUpdtdReposComplete = false
+let getURLsForUpdtdReposComplete = false
 
 let combinedArr = []
 
+// Check to see is the first request retrieved new Repos that are NOT in existing dataset
 function findNewRepos (newArray, existingArray) {
-  console.log('findNewRepos was called')
   let unMatchedObjs = []
   let existingRepos = existingArray.map(obj => obj.repo_name)
   newArray.forEach(function (obj) {
@@ -51,13 +58,12 @@ function findNewRepos (newArray, existingArray) {
     }
   })
   newRepoUrlsToFetch = unMatchedObjs.map((obj) => obj.url_for_all_repo_langs)
-  console.log(newRepoUrlsToFetch.length)
   findNewReposComplete = true
-  compileURLsToFetch(newRepoUrlsToFetch, updatedUrlsToFetch)
+  compileURLsToFetch(newRepoUrlsToFetch, updatedRepoUrlsToFetch)
 }
 
+// Check to see if push dates differ; if not save existing objects, if push dates are unique, prep to pass url to retrieve latest language byte data
 function findUpdatedRepos (newArray, existingArray) {
-  console.log('findUpdatedRepos was called')
   let matchedObjs = []
   existingArray.forEach(function (existObj) {
     newArray.filter(function (newArObj) {
@@ -67,11 +73,10 @@ function findUpdatedRepos (newArray, existingArray) {
     })
   })
   existingObjsToKeep = matchedObjs
-  console.log(existingObjsToKeep)
-  getURLsUpdtdRepos(matchedObjs)
+  getURLsForUpdtdRepos(matchedObjs)
 }
 
-function getURLsUpdtdRepos (arr) {
+function getURLsForUpdtdRepos (arr) {
   let updatedObjsToFetch = []
   existingArray.forEach(function (existObj) {
     if (arr.indexOf(existObj) === -1) {
@@ -79,10 +84,9 @@ function getURLsUpdtdRepos (arr) {
     }
   })
   let UpdtdUrls = updatedObjsToFetch.map((obj) => obj.url_for_all_repo_langs)
-  updatedUrlsToFetch = elimateDuplicates(UpdtdUrls)
-  console.log(updatedUrlsToFetch)
-  getURLsUpdtdReposComplete = true
-  compileURLsToFetch(newRepoUrlsToFetch, updatedUrlsToFetch)
+  updatedRepoUrlsToFetch = elimateDuplicates(UpdtdUrls)
+  getURLsForUpdtdReposComplete = true
+  compileURLsToFetch(newRepoUrlsToFetch, updatedRepoUrlsToFetch)
 }
 
 function elimateDuplicates (arr) {
@@ -93,18 +97,16 @@ function elimateDuplicates (arr) {
   return outPut
 }
 
-function compileURLsToFetch (newRepoUrlsToFetch, updatedUrlsToFetch) {
-  console.log('compileURLsToFetch was called')
-  console.log(findNewReposComplete)
-  console.log(getURLsUpdtdReposComplete)
-
-  if (findNewReposComplete === true && getURLsUpdtdReposComplete === true) {
-    combinedArr = newRepoUrlsToFetch.concat(updatedUrlsToFetch)
-    console.log(combinedArr)
+// Combine URLs for new repos and URLs with new pushed_at dates into a single array
+function compileURLsToFetch (newRepoUrlsToFetch, updatedRepoUrlsToFetch) {
+  if (findNewReposComplete === true && getURLsForUpdtdReposComplete === true) {
+    combinedArr = newRepoUrlsToFetch.concat(updatedRepoUrlsToFetch)
+    console.log(combinedArr.length)
     splitArryToURLs(combinedArr)
   }
 }
 
+// Pass urls from array to next fetch function one at a time
 function splitArryToURLs (array) {
    for (let i = 0; i < array.length; i++) {
      let url = array[i]
@@ -113,10 +115,9 @@ function splitArryToURLs (array) {
    }
  }
 
+// As the language byte data for each repo is retreived, it all goes into the array, langBytesAryofObjs
 let langBytesAryofObjs = []
-
 function getLanguageBytes (url) {
-  console.log('getLanguageBytes was called')
   fetch(url)
     .then(function (response) {
       if (response.status !== 200) {
@@ -137,16 +138,16 @@ function getLanguageBytes (url) {
     })
 }
 
+// combinedArr is the array with all URLs to fetch. Once the array to hold new repo language data is the same size as 'combinedArr', then the next function can be called
 function evalLangBytArrStatus () {
   console.log(langBytesAryofObjs.length)
   if (langBytesAryofObjs.length === combinedArr.length) {
-    // tallyLangByteCounts(langBytesAryofObjs)
     buildComprehensiveObj(arrayOfLangObjs, langBytesAryofObjs)
   }
 }
 
+// The next array and function integrate data from the first request (which gets data about all project repos) with data from the request that gets language byte data for each unique repo
 let comprehensiveObjArr = []
-
 function buildComprehensiveObj (array1, array2) {
   let comprehensiveObj = {}
   for (let i = 0; i < array1.length; i++) {
@@ -216,34 +217,42 @@ function makeBytesFirst (myData) {
     }
   })
   combineNewWithExistingObjs(newDataObjsArr, existingObjsToKeep)
-  // strToDtSingle(newDataObjsArr)
 }
 
+// Once the newly requested data has been processed using the functions above, these new objects need to be combined with the existing data objects (upadated repos were already removed earlier on)
 let updatedCompObj = []
 let combineNewWithExistComplete = false
 
 function combineNewWithExistingObjs (newDataObjsArr, existingObjsToKeep) {
   updatedCompObj = existingObjsToKeep.concat(newDataObjsArr)
-  console.log(updatedCompObj)
   combineNewWithExistComplete = true
-  console.log(updatedCompObj.length)
   drawScatterPlot()
 }
 
+// Finally, after the new data has been processed and then added into an array with the existing data objects, a single array of objects can be passed to d3 so that the scatter plot can be rendered
 function drawScatterPlot () {
-  console.log("drawScatterPlot was called");
-  d3.json('static_data/langBytesFirst.json', function (data) {
+  evaluateIfSVG()
+
+  // Since the function is called twice (once at very beginning before requests are sent to the API and again after the new data has been combined with the existing data, it is necessary to check whether the SVG has already been added to the DOM)
+  function evaluateIfSVG () {
+    let existingSVG = document.getElementById('for_svg')
+    if (existingSVG.hasChildNodes()) {
+      existingSVG.innerHTML = ''
+    }
+  }
+
+  d3.json('static_data/langBytesFirst.json', function (error, data) {
+    if (error) return console.warn(error)
+
     let myData = []
     evalDataSetForD3 (data, combineNewWithExistComplete)
 
+    // if new data is available (in the variable 'updatedCompObj'), it will be used in place of the existing data stored as 'data' and coming from the static_data/langBytesFirst.json
     function evalDataSetForD3 (data, combineNewWithExistComplete) {
-      console.log(combineNewWithExistComplete)
       if (combineNewWithExistComplete) {
         myData = updatedCompObj
-        console.log(myData)
       } else {
         myData = data
-        console.log(myData)
       }
     }
 
@@ -328,7 +337,8 @@ function drawScatterPlot () {
     // Draw dots
     svg.selectAll('dot')
       .data(myData)
-      .enter().append('circle')
+      .enter()
+      .append('circle')
       .attr('r', 3.5)
       .attr('cx', xValue)
       .attr('cy', yValue)
@@ -353,13 +363,13 @@ function drawScatterPlot () {
       .style('opacity', 0)
 
     // Set up alternative text to use for legend
-    let lcolor = d3.scaleOrdinal()
+    let legend_color = d3.scaleOrdinal()
       .domain(['JS', 'Ruby', 'CSS', 'HTML', 'Misc'])
       .range([blue, rubyred, purple, peach, grey])
 
     // Set up legend
     let legend = svg.selectAll('.legend')
-      .data(lcolor.domain())
+      .data(legend_color.domain())
       .enter().append('g')
       .attr('class', 'legend')
       .attr('transform', function (d, i) {
@@ -370,7 +380,7 @@ function drawScatterPlot () {
       .attr('x', margin.right + 4)
       .attr('width', 14)
       .attr('height', 14)
-      .style('fill', lcolor)
+      .style('fill', legend_color)
 
     legend.append('text')
       .attr('class', 'legend_label')
