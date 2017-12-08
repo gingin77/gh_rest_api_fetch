@@ -1,5 +1,45 @@
 [
   {
+    "language": "Ruby",
+    "count": 65014,
+    "repo_name": "tourify_rr",
+    "pushed_at": "2017-11-28T18:10:20Z",
+    "primary_repo_lang": "Ruby",
+    "url_for_all_repo_langs": "https://api.github.com/repos/Tourify/tourify_rr/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 28688,
+    "repo_name": "tourify_rr",
+    "pushed_at": "2017-11-28T18:10:20Z",
+    "primary_repo_lang": "Ruby",
+    "url_for_all_repo_langs": "https://api.github.com/repos/Tourify/tourify_rr/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 14994,
+    "repo_name": "tourify_rr",
+    "pushed_at": "2017-11-28T18:10:20Z",
+    "primary_repo_lang": "Ruby",
+    "url_for_all_repo_langs": "https://api.github.com/repos/Tourify/tourify_rr/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 8121,
+    "repo_name": "tourify_rr",
+    "pushed_at": "2017-11-28T18:10:20Z",
+    "primary_repo_lang": "Ruby",
+    "url_for_all_repo_langs": "https://api.github.com/repos/Tourify/tourify_rr/languages"
+  },
+  {
+    "language": "CoffeeScript",
+    "count": 1477,
+    "repo_name": "tourify_rr",
+    "pushed_at": "2017-11-28T18:10:20Z",
+    "primary_repo_lang": "Ruby",
+    "url_for_all_repo_langs": "https://api.github.com/repos/Tourify/tourify_rr/languages"
+  },
+  {
     "language": "JavaScript",
     "count": 6886,
     "repo_name": "Authentication_proj",
@@ -248,70 +288,6 @@
     "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/freeshelf/languages"
   },
   {
-    "language": "HTML",
-    "count": 5346,
-    "repo_name": "gh_language_graph",
-    "pushed_at": "2017-11-27T03:21:59Z",
-    "primary_repo_lang": "HTML",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
-  },
-  {
-    "language": "Ruby",
-    "count": 3734,
-    "repo_name": "gh_language_graph",
-    "pushed_at": "2017-11-27T03:21:59Z",
-    "primary_repo_lang": "HTML",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
-  },
-  {
-    "language": "JavaScript",
-    "count": 60930,
-    "repo_name": "gh_rest_api_fetch",
-    "pushed_at": "2017-11-27T15:07:30Z",
-    "primary_repo_lang": "JavaScript",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
-  },
-  {
-    "language": "HTML",
-    "count": 2306,
-    "repo_name": "gh_rest_api_fetch",
-    "pushed_at": "2017-11-27T15:07:30Z",
-    "primary_repo_lang": "JavaScript",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
-  },
-  {
-    "language": "CSS",
-    "count": 1121,
-    "repo_name": "gh_rest_api_fetch",
-    "pushed_at": "2017-11-27T15:07:30Z",
-    "primary_repo_lang": "JavaScript",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
-  },
-  {
-    "language": "CSS",
-    "count": 166979,
-    "repo_name": "gingin77.github.io",
-    "pushed_at": "2017-11-27T04:02:50Z",
-    "primary_repo_lang": "CSS",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
-  },
-  {
-    "language": "JavaScript",
-    "count": 45668,
-    "repo_name": "gingin77.github.io",
-    "pushed_at": "2017-11-27T04:02:50Z",
-    "primary_repo_lang": "CSS",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
-  },
-  {
-    "language": "HTML",
-    "count": 13299,
-    "repo_name": "gingin77.github.io",
-    "pushed_at": "2017-11-27T04:02:50Z",
-    "primary_repo_lang": "CSS",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
-  },
-  {
     "language": "JavaScript",
     "count": 25708,
     "repo_name": "github-profile-languages",
@@ -376,14 +352,6 @@
     "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/hamming/languages"
   },
   {
-    "language": "Null",
-    "count": 0,
-    "repo_name": "hello-world",
-    "pushed_at": "2017-07-10T01:26:21Z",
-    "primary_repo_lang": "na",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/hello-world/languages"
-  },
-  {
     "language": "CSS",
     "count": 7928,
     "repo_name": "iTunes_API",
@@ -446,14 +414,6 @@
     "pushed_at": "2017-11-02T17:33:17Z",
     "primary_repo_lang": "JavaScript",
     "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/memory-game/languages"
-  },
-  {
-    "language": "Null",
-    "count": 0,
-    "repo_name": "My_first_SQL_project",
-    "pushed_at": "2017-09-05T18:16:58Z",
-    "primary_repo_lang": "na",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/My_first_SQL_project/languages"
   },
   {
     "language": "CSS",
@@ -880,22 +840,6 @@
     "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/to_do_list/languages"
   },
   {
-    "language": "JavaScript",
-    "count": 76444,
-    "repo_name": "Weekend_2_assignment",
-    "pushed_at": "2017-07-31T23:27:16Z",
-    "primary_repo_lang": "JavaScript",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/Weekend_2_assignment/languages"
-  },
-  {
-    "language": "HTML",
-    "count": 208,
-    "repo_name": "Weekend_2_assignment",
-    "pushed_at": "2017-07-31T23:27:16Z",
-    "primary_repo_lang": "JavaScript",
-    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/Weekend_2_assignment/languages"
-  },
-  {
     "language": "Ruby",
     "count": 28060,
     "repo_name": "widget2",
@@ -958,5 +902,101 @@
     "pushed_at": "2017-11-04T15:18:06Z",
     "primary_repo_lang": "JavaScript",
     "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/Word_game/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 5346,
+    "repo_name": "gh_language_graph",
+    "pushed_at": "2017-12-01T19:35:23Z",
+    "primary_repo_lang": "HTML",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
+  },
+  {
+    "language": "Ruby",
+    "count": 3734,
+    "repo_name": "gh_language_graph",
+    "pushed_at": "2017-12-01T19:35:23Z",
+    "primary_repo_lang": "HTML",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_language_graph/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 61748,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-29T22:57:10Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 2194,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-29T22:57:10Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 1121,
+    "repo_name": "gh_rest_api_fetch",
+    "pushed_at": "2017-11-29T22:57:10Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gh_rest_api_fetch/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 53631,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-12-01T20:08:35Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 12516,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-12-01T20:08:35Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "CSS",
+    "count": 9238,
+    "repo_name": "gingin77.github.io",
+    "pushed_at": "2017-12-01T20:08:35Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/gingin77.github.io/languages"
+  },
+  {
+    "language": "Null",
+    "count": 0,
+    "repo_name": "hello-world",
+    "pushed_at": "2017-07-10T01:26:21Z",
+    "primary_repo_lang": "na",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/hello-world/languages"
+  },
+  {
+    "language": "Null",
+    "count": 0,
+    "repo_name": "My_first_SQL_project",
+    "pushed_at": "2017-09-05T18:16:58Z",
+    "primary_repo_lang": "na",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/My_first_SQL_project/languages"
+  },
+  {
+    "language": "JavaScript",
+    "count": 7429,
+    "repo_name": "New_to_test_fetch_sort",
+    "pushed_at": "2017-11-28T18:41:01Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/New_to_test_fetch_sort/languages"
+  },
+  {
+    "language": "HTML",
+    "count": 876,
+    "repo_name": "New_to_test_fetch_sort",
+    "pushed_at": "2017-11-28T18:41:01Z",
+    "primary_repo_lang": "JavaScript",
+    "url_for_all_repo_langs": "https://api.github.com/repos/gingin77/New_to_test_fetch_sort/languages"
   }
 ]
